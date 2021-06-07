@@ -1,3 +1,2 @@
 alive_progress >= 1.6.2
 praw >= 7.1.2
-python >= 3.5
