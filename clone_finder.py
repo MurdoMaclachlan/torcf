@@ -4,7 +4,8 @@ from datetime import datetime
 from gi import require_version
 require_version('Notify', '0.7')
 from gi.repository import Notify
-from os import isfile, isdir, mkdir
+from os import mkdir
+from os.path import isfile, isdir
 from sys import platform
 from time import time, sleep
 global Globals
