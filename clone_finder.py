@@ -58,7 +58,7 @@ def checkPost(post):
         logPost([f"Found unflaired post, could be clone. URL at: https://reddit.com{post.permalink}"])
     
     elif Globals.DEBUG:
-        logPost(["Skipping this post, log here for debug only."])
+        logPost(["Skipping post at: https://reddit.com{post.permalink}."])
 
 # Class for all important variables
 class Globals():
@@ -128,7 +128,7 @@ while True:
                 Globals.setPreviousPost(
                     {
                         "previousPostTitle": post.title,
-                        "previousPostURL": "https://reddit.com" + post.permalink
+                        "previousPostURL": f"https://reddit.com{post.permalink}"
                     }
                 )
             
