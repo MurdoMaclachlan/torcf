@@ -43,7 +43,7 @@ def checkPost(post):
     
     # If there is no flair and the title matches the title of the previous,
     # post, then the post is a clone
-    if post.link_flair_text is None and post.title == Globals.data["previousPostTitle"]:
+    if post.link_flair_text is None and post.title == Globals.postData["previousPostTitle"]:
         Notify.Notification.new("Found cloned post.").show()
         logPost(
             [
