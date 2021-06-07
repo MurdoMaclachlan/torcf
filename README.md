@@ -16,7 +16,7 @@ The config options are:
 - `Globals.VERBOSE`; set to False by default. This give a desktop notification whenever it skips a cycle.
 - `Globals.WAIT`; set to 30 by default. This is the number of seconds with the program waits between cycles.
 
-Requirements for installing the program can be found in `requirements.txt`. The default praw.ini section header is `tcf` (ToR Clone Finder) but this can be changed.
+Requirements for installing the program can be found in `requirements.txt`. The program requires a minimum Python version of **3.5** due to the use type hinting. The default praw.ini section header is `tcf` (ToR Clone Finder) but this can be changed.
 
 The program uses `gi.repository.Notify` to give desktop notifications, thus requiring GTK+ 3. This should be available for Windows, macOS and all Unix-like systems.
 
