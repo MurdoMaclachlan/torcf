@@ -8,14 +8,15 @@ from os import mkdir
 from os.path import isfile, isdir
 from sys import platform
 from time import time, sleep
+from typing import Dict, NoReturn
 global Globals
 
 # Returns the current time in human-readable format
-def getTime(timeToFind):
+def getTime(timeToFind: float) -> str:
     return datetime.fromtimestamp(timeToFind).strftime("%Y-%m-%d %H:%M:%S")
 
 # Logs a clone / potential clone to the log file.
-def logPost(lines):
+def logPost(lines: Dict) -> NoReturn:
     global Globals
     
     for line in lines:
@@ -38,12 +39,12 @@ def logPost(lines):
             log.write(f"At {getTime(post.created_utc)}\n")
             log.write(line+"\n")
             
-def checkPost(post):
+def checkPost(post: object) -> NoReturn:
     global Globals
     
     # If there is no flair and the title matches the title of the previous,
     # post, then the post is a clone
-    if post.link_flair_text is None and post.title == Globals.data["previousPostTitle"]:
+    if post.link_flair_text is None and post.title == Globals.postData["previousPostTitle"]:
         Notify.Notification.new("Found cloned post.").show()
         logPost(
             [
@@ -72,10 +73,10 @@ class Globals():
             }
         self.skip = False
         self.VERBOSE = False
-        self.VERSION = "0.4"
+        self.VERSION = "0.5"
         self.WAIT = 30
     
-    def setPreviousPost(self, data):
+    def setPreviousPost(self, data: Dict) -> NoReturn:
         for key in self.postData:
             if not key == "firstPostURL": self.postData[key] = data[key]
 
@@ -98,7 +99,7 @@ while True:
         
         # Check to see if the first post is the same as it was last loop
         # Skip this cycle if this is the case
-        if "https://reddit.com" + post.permalink == Globals.postData["firstPostURL"]:
+        if f"https://reddit.com{post.permalink}" == Globals.postData["firstPostURL"]:
             print("No new posts since last check, skipping cycle.")
             if Globals.VERBOSE: Notify.Notification.new("Skipping cycle.").show()
             Globals.skip = True
@@ -107,7 +108,7 @@ while True:
         # Else set new first post, continue to check all posts
         else:
             Globals.skip = False
-            Globals.postData["firstPostURL"] = "https://reddit.com" + post.permalink
+            Globals.postData["firstPostURL"] = f"https://reddit.com{post.permalink}"
             checkPost(post)
             break
     
