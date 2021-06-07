@@ -72,7 +72,7 @@ class Globals():
             }
         self.skip = False
         self.VERBOSE = False
-        self.VERSION = "0.5-dev1-20210607"
+        self.VERSION = "0.5-dev2-20210607"
         self.WAIT = 30
     
     def setPreviousPost(self, data):
@@ -98,7 +98,7 @@ while True:
         
         # Check to see if the first post is the same as it was last loop
         # Skip this cycle if this is the case
-        if "https://reddit.com" + post.permalink == Globals.postData["firstPostURL"]:
+        if f"https://reddit.com{post.permalink}" == Globals.postData["firstPostURL"]:
             print("No new posts since last check, skipping cycle.")
             if Globals.VERBOSE: Notify.Notification.new("Skipping cycle.").show()
             Globals.skip = True
@@ -107,7 +107,7 @@ while True:
         # Else set new first post, continue to check all posts
         else:
             Globals.skip = False
-            Globals.postData["firstPostURL"] = "https://reddit.com" + post.permalink
+            Globals.postData["firstPostURL"] = f"https://reddit.com{post.permalink}"
             checkPost(post)
             break
     
