@@ -71,7 +71,7 @@ class Globals():
             }
         self.skip = False
         self.VERBOSE = False
-        self.VERSION = "0.3.1"
+        self.VERSION = "0.4"
         self.WAIT = 30
     
     def setPreviousPost(self, data):
