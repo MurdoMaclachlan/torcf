@@ -1,0 +1,2 @@
+alive_pogress >= 1.6.2
+praw >= 7.1.2
