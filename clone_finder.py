@@ -73,7 +73,7 @@ class Globals():
             }
         self.skip = False
         self.VERBOSE = False
-        self.VERSION = "0.5-dev3-20210607"
+        self.VERSION = "0.5"
         self.WAIT = 30
     
     def setPreviousPost(self, data: Dict) -> NoReturn:
