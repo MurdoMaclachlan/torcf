@@ -8,14 +8,15 @@ from os import mkdir
 from os.path import isfile, isdir
 from sys import platform
 from time import time, sleep
+from typing import Dict, NoReturn
 global Globals
 
 # Returns the current time in human-readable format
-def getTime(timeToFind):
+def getTime(timeToFind: float) -> str:
     return datetime.fromtimestamp(timeToFind).strftime("%Y-%m-%d %H:%M:%S")
 
 # Logs a clone / potential clone to the log file.
-def logPost(lines):
+def logPost(lines: Dict) -> NoReturn:
     global Globals
     
     for line in lines:
@@ -38,7 +39,7 @@ def logPost(lines):
             log.write(f"At {getTime(post.created_utc)}\n")
             log.write(line+"\n")
             
-def checkPost(post):
+def checkPost(post: object) -> NoReturn:
     global Globals
     
     # If there is no flair and the title matches the title of the previous,
@@ -72,10 +73,10 @@ class Globals():
             }
         self.skip = False
         self.VERBOSE = False
-        self.VERSION = "0.5-dev2-20210607"
+        self.VERSION = "0.5-dev3-20210607"
         self.WAIT = 30
     
-    def setPreviousPost(self, data):
+    def setPreviousPost(self, data: Dict) -> NoReturn:
         for key in self.postData:
             if not key == "firstPostURL": self.postData[key] = data[key]
 
