@@ -8,7 +8,7 @@ Clones are easy to identify, as they have no flair and will have the exact same 
 
 ## Using this tool
 
-Being a program I wrote originally for personal use, this program does not have anything built in for editing config or setting up praw.ini. The process for setting it up is the same as any other normal Reddit app. To edit config options, simply change the values hardocded into the program.
+Being a program I wrote originally for personal use, this program does not have anything built in for editing config or setting up praw.ini. The process for setting it up is the same as any other normal Reddit app. To edit config options, simply change the values hardcoded into the program.
 
 The config options are:
 
