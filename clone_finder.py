@@ -39,7 +39,7 @@ def logPost(lines: Dict) -> NoReturn:
             log.write(f"At {getTime(post.created_utc)}\n")
             log.write(line+"\n")
             
-def checkPost(post: object) -> NoReturn:
+def checkPost(post: praw.models.Submission) -> NoReturn:
     global Globals
     
     # If there is no flair and the title matches the title of the previous,
@@ -63,7 +63,7 @@ def checkPost(post: object) -> NoReturn:
         logPost(["Skipping post at: https://reddit.com{post.permalink}."])
 
 # Class for all important variables
-class Globals():
+class Globals:
     def __init__(self):
         self.DEBUG = False
         self.postData = {
@@ -73,7 +73,7 @@ class Globals():
             }
         self.skip = False
         self.VERBOSE = False
-        self.VERSION = "0.5"
+        self.VERSION = "0.5.1"
         self.WAIT = 30
     
     def setPreviousPost(self, data: Dict) -> NoReturn:
