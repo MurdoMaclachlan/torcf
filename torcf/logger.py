@@ -25,7 +25,7 @@ from typing import List, NoReturn, Union
 class Logger:
     def __init__(
         self: object,
-        debug=0, error=1, fatal=1, info=1, noscope=1, warning=1
+        debug=0, error=1, fatal=1, info=1, warning=1
     ) -> NoReturn:
         self.__log = []
         self.__scopes = {
@@ -33,7 +33,6 @@ class Logger:
             "ERROR":   error,   # errors the program can recover from
             "FATAL":   fatal,   # errors that mean the program cannot continue
             "INFO":    info,    # general information for the user
-            "NOSCOPE": noscope, # a select few messages that should have no listed scope
             "WARNING": warning  # things that could cause errors later on
         }
 
@@ -92,10 +91,16 @@ class Logger:
 
         Returns: boolean success status.
         """
-        if self.__scopes[scope]:
-            self.__log.append(f"{[self.get_time()]} {scope}: {message}")
+        # A select few messages should have no listed scope and should always be logged
+        # and printed
+        if scope == "NOSCOPE":
+            self.__log.append(f"{message}")
+            print(f"{message}")
+            return True
+        elif self.__scopes[scope]:
+            self.__log.append(f"[{self.get_time()}] {scope}: {message}")
             print(
-                f"{[self.get_time()]} {scope}: {message}"
+                f"[{self.get_time()}] {scope}: {message}"
                 if not do_not_print
                 else None
             )
