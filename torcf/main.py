@@ -107,7 +107,11 @@ def clone_finder() -> NoReturn:
             if Globals.CHECK_FOR_SUB:
                 with open("data/post_list.txt", "w+") as post_file:
                     for i in Globals.WANTED_POSTS:
-                        post_file.write(f"{i.subreddit} | {i.flair} | {i.orig_link}\n")
+                        post_file.write(
+                            f"{i.subreddit} |"
+                            + f" {i.flair} |"
+                            + f" https://reddit.com{i.permalink}\n"
+                        )
             Log.new(
                 f"Finished checking all posts, waiting {Globals.WAIT} seconds.",
                 "INFO"
