@@ -17,6 +17,8 @@
     Contact me at murdomaclachlan@duck.com
 """
 
+from os import mkdir
+from os.path import isdir
 from configparser import ConfigParser
 from typing import Dict, NoReturn
 from .logger import Log
@@ -47,14 +49,21 @@ def create_credentials() -> bool:
         "praw.ini missing, incomplete or incorrect. It will need to be created.",
         "INFO"
     )
-    return dump_credentials(
-        {
-            "client_id": input("Please input your client id:  "),
-            "client_secret": input("Please input your client secret:  "),
-            "username": input("Please input your username:  "),
-            "redirect_uri": "http://localhost:8080/users/auth/reddit/callback",
-        }
-    )
+    creds = {
+        "client_id": input("Please input your client id:  "),
+        "client_secret": input("Please input your client secret:  "),
+        "username": input("Please input your username:  "),
+        "redirect_uri": "http://localhost:8080/users/auth/reddit/callback",
+    }
+    try:
+        return dump_credentials(creds)
+    except FileNotFoundError:
+        if not isdir("data"):
+            mkdir("data")
+            return dump_credentials(creds)
+        else:
+            return False
+
 
 
 def dump_credentials(creds: Dict) -> NoReturn:
@@ -66,7 +75,7 @@ def dump_credentials(creds: Dict) -> NoReturn:
     Returns: boolean success status.
     """
     Parser = ConfigParser()
-    Parser["oscr"] = creds
+    Parser["tcf"] = creds
     with open(f"data/praw.ini", "w+") as dump_file:
         Parser.write(dump_file)
     return True

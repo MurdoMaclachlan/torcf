@@ -88,8 +88,7 @@ def clone_finder() -> NoReturn:
 
                     # Collect variables to avoid repeated calculations & improve
                     # readability
-                    short_title = post.title.split(" | ")[0].casefold()
-                    match_sub = (short_title in Globals.SUBREDDITS)
+                    match_sub = (post.subreddit in Globals.SUBREDDITS)
 
                     if Globals.CHECK_FOR_SUB:
                         # If this post has yet to be found, add it to the list
