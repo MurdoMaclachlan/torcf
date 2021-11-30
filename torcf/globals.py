@@ -19,9 +19,10 @@
 
 
 class GlobalVars:
-    def __init__(self):
+    def __init__(self: object):
         self.CHECK_FOR_SUB = True
         self.DEBUG = False
+        self.FIRST_POST_URL = ""
         self.POSTS = []
         # Remove found clones; recommended to keep disabled in the testing phase. Will
         # always need to be disabled if you aren't a moderator, as you won't have this
@@ -38,11 +39,16 @@ class GlobalVars:
 
 
 class ToRPost:
-    def __init__(self: object, praw_obj: object, orig_sub: str, orig_link: str):
-        self.orig_link = orig_link
-        self.orig_sub = orig_sub
+    def __eq__(self: object, other: object):
+        return self.orig_link == other.orig_link
+
+    def __init__(self: object, praw_obj: object):
         self.praw_obj = praw_obj
-        self.permalink = self.PRAW_OBJ.permalink
+        self.created = self.praw_obj.created_utc
+        self.flair = self.praw_obj.link_flair_text
+        self.orig_link = self.praw_obj.url
+        self.permalink = self.praw_obj.permalink
+        self.subreddit = self.praw_obj.title.split(" |")[0]
 
     def remove(self: object):
         self.praw_obj.mod.remove(mod_note="Cloned post.")
