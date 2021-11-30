@@ -109,4 +109,4 @@ class Logger:
 
 
 global Log
-Log = Logger(debug=1)
+Log = Logger()

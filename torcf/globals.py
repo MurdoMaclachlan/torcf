@@ -65,6 +65,16 @@ class ToRPost:
         self.permalink = self.praw_obj.permalink
         self.subreddit = self.praw_obj.title.split(" |")[0]
 
+    def update_flair(self: object, new_flair: str) -> NoReturn:
+        """Updates the currently stores flair of the ToRPost with a new, given one.
+
+        Arguments:
+        - new_flair (string)
+
+        No return value.
+        """
+        self.flair = new_flair
+
     def remove(self: object) -> NoReturn:
         """Removes the post from the ToR queue. Can only be invoked by moderators of
         r/TranscribersOfReddit; will crash the program if attempted by anyone else.
