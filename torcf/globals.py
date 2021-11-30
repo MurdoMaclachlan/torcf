@@ -44,8 +44,8 @@ class ToRPost:
         self.praw_obj = praw_obj
         self.permalink = self.PRAW_OBJ.permalink
 
-    def delete(self: object):
-        self.praw_obj.delete()
+    def remove(self: object):
+        self.praw_obj.mod.remove(mod_note="Cloned post.")
 
 
 Globals = GlobalVars()
