@@ -21,7 +21,6 @@
 class GlobalVars:
     def __init__(self: object):
         self.CHECK_FOR_SUB = True
-        self.DEBUG = False
         self.FIRST_POST_URL = ""
         self.POSTS = []
         # Remove found clones; recommended to keep disabled in the testing phase. Will
