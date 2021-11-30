@@ -17,6 +17,8 @@
     Contact me at murdomaclachlan@duck.com
 """
 
+from typing import NoReturn
+
 
 class GlobalVars:
     def __init__(self: object):
@@ -35,9 +37,23 @@ class GlobalVars:
             self.SUBREDDITS = input(
                 "Please enter the subreddits to search for, separated by spaces\n >> "
             ).split(" ")
+            self.WANTED_POSTS = []
+
+    def clean(self: object) -> NoReturn:
+        """Deletes all currently stored members of self.POSTS.
+
+        No arguments.
+
+        No return value.
+        """
+        del self.POSTS[:]
 
 
 class ToRPost:
+    """Represents an instance of a post on the r/TranscribersOfReddit subreddit, with
+    several attributes and methods which help the program investigate and manipulate the
+    post.
+    """
     def __eq__(self: object, other: object):
         return self.orig_link == other.orig_link
 
@@ -49,7 +65,14 @@ class ToRPost:
         self.permalink = self.praw_obj.permalink
         self.subreddit = self.praw_obj.title.split(" |")[0]
 
-    def remove(self: object):
+    def remove(self: object) -> NoReturn:
+        """Removes the post from the ToR queue. Can only be invoked by moderators of
+        r/TranscribersOfReddit; will crash the program if attempted by anyone else.
+
+        No arguments.
+
+        No return value.
+        """
         self.praw_obj.mod.remove(mod_note="Cloned post.")
 
 
