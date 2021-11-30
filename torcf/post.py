@@ -51,8 +51,9 @@ def check_post(post: ToRPost, Notify: object) -> NoReturn:
     No return value.
     """
     duplicates = duplicate(post)
-    if (len(i) > 0 for i in duplicates.keys()):
+    if len(duplicates["flaired"]) > 0 or len(duplicates["unflaired"]) > 0:
         Notify.Notification.new("Found cloned post.").show()
+        print(duplicates)
         for i in duplicates["unflaired"]:
             Log.new(
                 (
@@ -70,7 +71,7 @@ def check_post(post: ToRPost, Notify: object) -> NoReturn:
                 "INFO"
             )
     else:
-        Log.new("Skipping post at: https://reddit.com{post.permalink}.", "DEBUG")
+        Log.new(f"Skipping post at: https://reddit.com{post.permalink}.", "DEBUG")
 
 
 def duplicate(post: ToRPost) -> Dict:

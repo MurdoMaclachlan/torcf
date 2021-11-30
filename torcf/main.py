@@ -101,15 +101,19 @@ def clone_finder() -> NoReturn:
                             Globals.WANTED_POSTS[
                                 Globals.WANTED_POSTS.index(post)
                             ].update_flair(post.flair)
+                    progress()
 
             # Write out any updated post data
             if Globals.CHECK_FOR_SUB:
                 with open("data/post_list.txt", "w+") as post_file:
                     for i in Globals.WANTED_POSTS:
                         post_file.write(f"{i.SUBREDDIT} | {i.flair} | {i.url}\n")
-            Log.new(f"Finished checking all posts, waiting {Globals.WAIT} seconds.")
+            Log.new(
+                f"Finished checking all posts, waiting {Globals.WAIT} seconds.",
+                "INFO"
+            )
         else:
-            Log.new(f"Waiting {Globals.WAIT} seconds.")
+            Log.new(f"Waiting {Globals.WAIT} seconds.", "INFO")
 
         Log.output()
         Globals.clean()

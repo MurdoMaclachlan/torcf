@@ -31,7 +31,7 @@ class GlobalVars:
         self.REMOVE = False
         self.skip = False
         self.VERBOSE = False
-        self.VERSION = "1.0.0-dev5-20211130"
+        self.VERSION = "1.0.0-dev7-20211130"
         self.WAIT = 30
         if self.CHECK_FOR_SUB:
             self.SUBREDDITS = input(
