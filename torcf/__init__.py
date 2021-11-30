@@ -15,5 +15,13 @@ from .creds import get_credentials
 from .globals import Globals, GlobalVars
 from .globals import ToRPost
 
-# Logegr
+# Logger
 from .logger import Log, Logger
+
+# Main program
+from .main import clone_finder
+
+# Post manipulation
+from .post import add_post
+from .post import check_post
+from .post import duplicate
