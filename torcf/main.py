@@ -40,8 +40,7 @@ def clone_finder() -> NoReturn:
     """
     Notify.init("Clone Finder")
     Log.new(
-        f"Running Clone Finder version {Globals.VERSION} with debug set to"
-        + f" {Globals.DEBUG}.",
+        f"Running Clone Finder version {Globals.VERSION}",
         "NOSCOPE"
     )
     reddit = init()
