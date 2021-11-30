@@ -54,7 +54,7 @@ class Logger:
             self.new("Unknown mode passed to Logger.get().", "WARNING")
             return ""
 
-    def get_time(self: object, time: int = time()) -> str:
+    def get_time(self: object, method: str ="time") -> str:
         """Gets the current time and parses it to a human-readable format.
 
         Arguments:
@@ -62,7 +62,20 @@ class Logger:
 
         Returns: a single date string in format 'YYYY-MM-DD HH:MM:SS'.
         """
-        return datetime.fromtimestamp(time).strftime("%Y-%m-%d %H:%M:%S")
+        if method == "time":
+            return datetime.fromtimestamp(time()).strftime("%Y-%m-%d %H:%M:%S")
+        elif method == "date":
+            return datetime.fromtimestamp(time()).strftime("%Y-%m-%d")
+        else:
+            print("ERROR: Bad method passed to Logger.get_time().")
+
+    def output(self: object) -> NoReturn:
+        for line in self.__log:
+            with open(
+                    f"data/clone_log-{self.get_time(method='date')}.txt",
+                    "at+"
+                ) as log_file:
+                log_file.write(line + "\n")
 
     def new(
             self: object,
