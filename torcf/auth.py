@@ -53,7 +53,7 @@ def check_failure(client: object, params: Dict, state: str) -> NoReturn:
         sys.exit()
     elif "error" in params:
         send_message(client, params["error"])
-        Log.new([params["error"]])
+        Log.new([params["error"]], "FATAL")
         sys.exit()
 
 

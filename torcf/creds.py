@@ -65,7 +65,6 @@ def create_credentials() -> bool:
             return False
 
 
-
 def dump_credentials(creds: Dict) -> NoReturn:
     """Outputs updated Reddit credentials to praw.ini.
 
