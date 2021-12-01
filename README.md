@@ -1,23 +1,35 @@
-# Clone Finder
+# TCF (ToR Clone Finder)
 
 **This is an UNOFFICIAL tool. It has been helpful to me in identifying clones in the past, so I thought I would share it for others.**
 
 This small tool finds, notifies and documents cloned posts in r/TranscribersOfReddit queue. These clones arise as a result of Reddit sending an error response despite there actually being no error, causing the bot to attempt to post again and resulting in a clone appearing.
 
-Clones are easy to identify, as they have no flair and will have the exact same title and link as the post before them. This program simply does it automatically, and logs info about it.
+Most clones are easy to identify; they have no flair and all link to the same partner post. This type of clone is caused by Reddit erroring during the flairing part of post creation, forcing Blossom to re-submit from the top. Generally here, the final post to be submitted will be the successful, flaired one. I call this type of clone a "Soft Clone".
+
+The second, far rarer type of clone, which I call a "Hard Clone", does have a flair. In this instance, it's uncertain where the error ocurred, but it is likely that Reddit errored at some point following the flairing of the post. This case is harder to deal with, so TCF has no built-in ability to remove these, and instead requests manual action.
 
 ## Using this tool
 
-Being a program I wrote originally for personal use, this program does not have anything built in for editing config or setting up praw.ini. The process for setting it up is the same as any other normal Reddit app. To edit config options, simply change the values hardcoded into the program.
+Being a program I wrote originally for personal use, this program does not have anything built in for editing config or setting up praw.ini. The process for setting it up is very simple; it enforces the use of refresh tokens, so simply create an app for it, copy in the client id and secret and your username, and it will guide you through the remainder of the authentication process. 
 
-The config options are:
+To edit config options, simply change the values hardcoded into the program. The config options are:
 
-- `Globals.DEBUG`; set to False by default. This will give log output for every post it checks, showing which ones it is skipping.
-- `Globals.VERBOSE`; set to False by default. This give a desktop notification whenever it skips a cycle.
+- `Globals.CHECK_FOR_SUB`; set to False by default. This allows the user to enter partner subs to search for at the start of program run-time. TCF will detect any posts from these partners and keep a log of their link and current flair in `post_list.txt`, in the data folder.
+- `Globals.REMOVE`; set to False by default. If True, this will remove any soft clones it finds. Note that this will crash your program if you do not have moderator permissions. Even if you do have moderator permissions, it is **not recommended to set this as True** until further testing is done to make sure non-clones are not accidentally removed.
+- `Globals.VERBOSE`; set to False by default. If True, this gives a desktop notification whenever it skips a cycle.
 - `Globals.WAIT`; set to 30 by default. This is the number of seconds with the program waits between cycles.
+
+There is also configuration available for the logger, by changing the optional arguments that are passed to its scopes. If a value of `0` is passed, debug statements of that scope will be disabled. If `1` is passed, they will be sent to the console but not the log file, and if `2` is passed, they will be sent to the console and saved to the log file. The available scopes are:
+
+- `CLONE`: A notification that a clone has been found. Default: 2
+- `DEBUG`: Information for debugging the program. Default: 0
+- `ERROR`: Errors the program can recover from but may harm some of its functionality. Default: 2
+- `FATAL`: Errors that mean the program cannot continue; crashes. Default: 2
+- `INFO`: General information about what the program is currently doing. Default: 1
+- `WARNING`: Things that could cause errors later on. Default: 2
 
 Requirements for installing the program can be found in `requirements.txt`. The program requires a minimum Python version of **3.5** due to the use type hinting. The default praw.ini section header is `tcf` (ToR Clone Finder) but this can be changed.
 
 The program uses `gi.repository.Notify` to give desktop notifications, thus requiring GTK+ 3. This should be available for Windows, macOS and all Unix-like systems.
 
-The program's data is stored in a subfolder of the working directory (the directory it is run from). I suggest creating a folder specifically for the program; mine is stored in a `programs/clone_finder` subfolder of my Transcribers of Reddit-related folder.
+The program's data, including the `praw.ini` file and any logs, is stored in a subfolder of the working directory (the directory it is run from). I suggest creating a folder specifically for the program; mine is stored in a `programs/clone_finder` subfolder of my Transcribers of Reddit-related folder.
