@@ -18,8 +18,7 @@
 """
 
 from praw.models import Submission
-from time import time
-from typing import Dict, NoReturn, Union
+from typing import Dict, NoReturn
 from .globals import Globals, ToRPost
 from .logger import Log
 
@@ -36,7 +35,7 @@ def add_post(post: Submission) -> NoReturn:
 
     No return value.
     """
-    Globals.POSTS.append(ToRPost(post))
+    Globals.posts.append(ToRPost(post))
 
 
 def check_post(post: ToRPost, Notify: object) -> NoReturn:
@@ -88,7 +87,7 @@ def duplicate(post: ToRPost) -> Dict:
     }
     # Skipping the queue before the post is safe to do, as we will have already checked
     # that portion for clones
-    for i in Globals.POSTS[Globals.POSTS.index(post)+1:]:
+    for i in Globals.posts[Globals.posts.index(post)+1:]:
         # Flaired clones are very rare but occasionally happen. The reason for them has
         # yet to be diagnosed, and we will keep them separate so they can be manually
         # inspected.

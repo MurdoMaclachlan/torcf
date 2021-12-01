@@ -21,17 +21,40 @@ from typing import NoReturn
 
 
 class GlobalVars:
+    """Container and handler for global variables used throughout the program.
+
+    Attributes:
+        - CHECK_FOR_SUB (bool): whether or not the program should notify the user of
+        posts from specific partner subs.
+        - first_post_url (str): the URL of the first post in the queue on the most
+        recent cycle.
+        - posts (list): a list of ToRPost objects.
+        - REMOVE (bool): whether or not unflaired clones should be automatically removed
+        by the program.
+        - skip (bool): whether or not the current cycle should be skipped.
+        - VERBOSE (bool): whether or not the program should send desktop notifications
+        when clones are found.
+        - VERSION (str): the current version of the program.
+        - WAIT (int): the number of seconds the program should wait between cycles.
+        - SUBREDDITS (str): only exists if CHECK_FOR_SUBS is true; the list of partners
+        to check for posts from.
+        - WANTED_POSTS (list): only exists if CHECK_FOR_SUBS is true; the list of posts
+        that have been found from the partners in SUBREDDITS.
+
+    Methods:
+        - clean(): empties the list of posts.
+    """
     def __init__(self: object):
         self.CHECK_FOR_SUB = True
-        self.FIRST_POST_URL = ""
-        self.POSTS = []
+        self.first_post_url = ""
+        self.posts = []
         # Remove found clones; recommended to keep disabled in the testing phase. Will
         # always need to be disabled if you aren't a moderator, as you won't have this
         # permission.
         self.REMOVE = False
         self.skip = False
         self.VERBOSE = False
-        self.VERSION = "1.0.0-dev7-20211130"
+        self.VERSION = "1.0.0-dev8-20211130"
         self.WAIT = 30
         if self.CHECK_FOR_SUB:
             self.SUBREDDITS = input(
@@ -46,7 +69,7 @@ class GlobalVars:
 
         No return value.
         """
-        del self.POSTS[:]
+        del self.posts[:]
 
 
 class ToRPost:

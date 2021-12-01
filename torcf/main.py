@@ -39,10 +39,7 @@ def clone_finder() -> NoReturn:
     No return value.
     """
     Notify.init("Clone Finder")
-    Log.new(
-        f"Running Clone Finder version {Globals.VERSION}",
-        "NOSCOPE"
-    )
+    Log.new(f"Running Clone Finder version {Globals.VERSION}", "NOSCOPE")
     reddit = init()
 
     while True:
@@ -55,7 +52,7 @@ def clone_finder() -> NoReturn:
         for post in post_list:
             # If the first post in the queue is the same as it was last time we checked,
             # nothing has changed and we skip this cycle
-            if Globals.FIRST_POST_URL == f"https://reddit.com{post.permalink}":
+            if Globals.first_post_url == f"https://reddit.com{post.permalink}":
                 Log.new("No new posts since last check, skipping cycle.", "INFO")
                 if Globals.VERBOSE:
                     Notify.Notification.new("Skipping cycle.").show()
@@ -64,7 +61,7 @@ def clone_finder() -> NoReturn:
             # Else, update the URL of the first post and continue to the main checks
             else:
                 Globals.skip = False
-                Globals.FIRST_POST_URL = f"https://reddit.com{post.permalink}"
+                Globals.first_post_url = f"https://reddit.com{post.permalink}"
                 break
 
         if not Globals.skip:
@@ -82,7 +79,7 @@ def clone_finder() -> NoReturn:
             with alive_bar(
                     500, spinner='classic', bar='classic', enrich_print=False
                 ) as progress:
-                for post in Globals.POSTS:
+                for post in Globals.posts:
                     # Check if clone first
                     check_post(post, Notify)
 
