@@ -101,3 +101,43 @@ def duplicate(post: ToRPost) -> Dict:
         else:
             continue
     return duplicates
+
+
+def find_wanted(post: ToRPost) -> NoReturn:
+    """Check if the post originates on a partner sub we're searching for, either adding
+    it to the list of wanted posts, or updating its flair on that list.
+
+    Arguments:
+        - post (ToRPost): the post to check.
+
+    No return value.
+    """
+    match_sub = (post.subreddit in Globals.SUBREDDITS)
+    if Globals.CHECK_FOR_SUB:
+        # If this post has yet to be found, add it to the list
+        if match_sub and post not in Globals.WANTED_POSTS:
+            Globals.WANTED_POSTS.append(post)
+        # If this post has been found, ensure its flair is up to date
+        # by updating the already logged post's flair with the new
+        # ToRPost instance's flair
+        elif match_sub and post in Globals.WANTED_POSTS:
+            Globals.WANTED_POSTS[
+                Globals.WANTED_POSTS.index(post)
+            ].update_flair(post.flair)
+
+
+def update_post_list() -> NoReturn:
+    """Write out current data within Gloabls.WANTED_POSTS to the post_list file,
+    overwriting the data that was previously in that file.
+
+    No arguments.
+
+    No return value.
+    """
+    with open("data/post_list.txt", "w+") as post_file:
+        for i in Globals.WANTED_POSTS:
+            post_file.write(
+                f"{i.subreddit} |"
+                + f" {i.flair} |"
+                + f" https://reddit.com{i.permalink}\n"
+            )

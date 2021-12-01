@@ -17,7 +17,7 @@
     Contact me at murdomaclachlan@duck.com
 """
 
-from typing import NoReturn
+from typing import Iterable, NoReturn
 
 
 class GlobalVars:
@@ -54,13 +54,33 @@ class GlobalVars:
         self.REMOVE = False
         self.skip = False
         self.VERBOSE = False
-        self.VERSION = "1.0.0-dev10-2021201"
+        self.VERSION = "1.0.0-dev11-2021201"
         self.WAIT = 30
         if self.CHECK_FOR_SUB:
             self.SUBREDDITS = input(
                 "Please enter the subreddits to search for, separated by spaces\n >> "
             ).split(" ")
             self.WANTED_POSTS = []
+
+    def check_skip(self: object, post_list: Iterable) -> bool:
+        """Using the first_post_url value, check whether or not we should skip this
+        cycle.
+
+        Arguments:
+            - post_list (Iterable): the list of posts in the queue
+
+        Returns: a boolean success status
+        """
+        for post in post_list:
+            post_url = f"https://reddit.com{post.permalink}"
+            # If the first post in the queue is the same as it was last time we checked,
+            # nothing has changed and we skip this cycle
+            if self.first_post_url == post_url:
+                return True
+            # Else, update the URL of the first post and continue to the main checks
+            else:
+                self.first_post_url = post_url
+                return False
 
     def clean(self: object) -> NoReturn:
         """Deletes all currently stored members of self.POSTS.

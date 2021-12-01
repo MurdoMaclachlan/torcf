@@ -26,7 +26,7 @@ from typing import NoReturn
 from .auth import init
 from .globals import Globals
 from .logger import Log
-from .post import add_post, check_post
+from .post import add_post, check_post, find_wanted, update_post_list
 
 global Globals, Log
 
@@ -49,22 +49,7 @@ def clone_finder() -> NoReturn:
         post_list = reddit.subreddit("transcribersofreddit").new(limit=500)
         Log.new("Posts fetched; generating list...", "INFO")
 
-        for post in post_list:
-            # If the first post in the queue is the same as it was last time we checked,
-            # nothing has changed and we skip this cycle
-            if Globals.first_post_url == f"https://reddit.com{post.permalink}":
-                Log.new("No new posts since last check, skipping cycle.", "INFO")
-                if Globals.VERBOSE:
-                    Notify.Notification.new("Skipping cycle.").show()
-                Globals.skip = True
-                break
-            # Else, update the URL of the first post and continue to the main checks
-            else:
-                Globals.skip = False
-                Globals.first_post_url = f"https://reddit.com{post.permalink}"
-                break
-
-        if not Globals.skip:
+        if not Globals.check_skip(post_list):
             Log.new("Processing list...", "INFO")
             with alive_bar(
                     500, spinner='classic', bar='classic', enrich_print=False
@@ -80,40 +65,21 @@ def clone_finder() -> NoReturn:
                     500, spinner='classic', bar='classic', enrich_print=False
                 ) as progress:
                 for post in Globals.posts:
-                    # Check if clone first
                     check_post(post, Notify)
-
-                    # Collect variables to avoid repeated calculations & improve
-                    # readability
-                    match_sub = (post.subreddit in Globals.SUBREDDITS)
-
-                    if Globals.CHECK_FOR_SUB:
-                        # If this post has yet to be found, add it to the list
-                        if match_sub and post not in Globals.WANTED_POSTS:
-                            Globals.WANTED_POSTS.append(post)
-                        # If this post has been found, ensure its flair is up to date
-                        # by updating the already logged post's flair with the new
-                        # ToRPost instance's flair
-                        elif match_sub and post in Globals.WANTED_POSTS:
-                            Globals.WANTED_POSTS[
-                                Globals.WANTED_POSTS.index(post)
-                            ].update_flair(post.flair)
+                    find_wanted(post)
                     progress()
 
             # Write out any updated post data
             if Globals.CHECK_FOR_SUB:
-                with open("data/post_list.txt", "w+") as post_file:
-                    for i in Globals.WANTED_POSTS:
-                        post_file.write(
-                            f"{i.subreddit} |"
-                            + f" {i.flair} |"
-                            + f" https://reddit.com{i.permalink}\n"
-                        )
+                update_post_list()
             Log.new(
                 f"Finished checking all posts, waiting {Globals.WAIT} seconds.",
                 "INFO"
             )
         else:
+            Log.new("No new posts since last check, skipping cycle.", "INFO")
+            if Globals.VERBOSE:
+                Notify.Notification.new("Skipping cycle.").show()
             Log.new(f"Waiting {Globals.WAIT} seconds.", "INFO")
 
         Log.output()

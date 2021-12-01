@@ -99,53 +99,39 @@ def login() -> object:
 
     # Indicates user will not have authorised TCF yet
     if "refresh_token" not in creds.keys():
-
-        reddit = praw.Reddit(
-            redirect_uri=creds["redirect_uri"],
-            **constants,
+        reddit = praw.Reddit(redirect_uri=creds["redirect_uri"], **constants)
+        state = str(randint(0, 65000))
+        scopes = ["history", "read", "edit"]
+        url = reddit.auth.url(scopes, state, "permanent")
+        Log.new(
+            "TCF has not yet been authorised with your account. The program"
+            + " will now open a tab in your browser to complete this process.",
+            "INFO"
         )
-        try:
-            reddit.user.me()
-        except Exception as e:
-            if str(e) != "invalid_grant error processing request":
-                Log.new(f"LOGIN FAILURE: {e}", "FATAL")
-                sys.exit(0)
+        webbrowser.open(url)
 
-            # Open a browser tab with the redirect_uri to complete the authentication
-            # process and retrieve a refresh token
-            else:
-                state = str(randint(0, 65000))
-                scopes = ["history", "read", "edit"]
-                url = reddit.auth.url(scopes, state, "permanent")
-                Log.new(
-                    "TCF has not yet been authorised with your account. The program"
-                    + " will now open a tab in your browser to complete this process.",
-                    "INFO"
-                )
-                webbrowser.open(url)
+        client = receive_connection()
+        data = client.recv(1024).decode("utf-8")
+        param_tokens = data.split(" ", 2)[1].split("?", 1)[1].split("&")
+        params = {
+            key:
+            value for (key, value) in [
+                token.split("=") for token in param_tokens
+            ]
+        }
 
-                client = receive_connection()
-                data = client.recv(1024).decode("utf-8")
-                param_tokens = data.split(" ", 2)[1].split("?", 1)[1].split("&")
-                params = {
-                    key:
-                    value for (key, value) in [
-                        token.split("=") for token in param_tokens
-                    ]
-                }
+        # Check for an authorisation failure
+        check_failure(client, params, state)
 
-                # Check for an authorisation failure
-                check_failure(client, params, state)
-
-                refresh_token = reddit.auth.authorize(params["code"])
-                add_refresh_token(creds, refresh_token)
-                send_message(
-                    client,
-                    f"Refresh token: {refresh_token}. Feel free to close"
-                    + " this page. This message is simply for success"
-                    + " confirmation; it is not necessary to save your"
-                    + " refresh_token, as TCF has automatically done this.",
-                )
+        refresh_token = reddit.auth.authorize(params["code"])
+        add_refresh_token(creds, refresh_token)
+        send_message(
+            client,
+            f"Refresh token: {refresh_token}. Feel free to close"
+            + " this page. This message is simply for success"
+            + " confirmation; it is not necessary to save your"
+            + " refresh_token, as TCF has automatically done this.",
+        )
     # If user has already authorised TCF
     else:
         reddit = praw.Reddit(refresh_token=creds["refresh_token"], **constants)
