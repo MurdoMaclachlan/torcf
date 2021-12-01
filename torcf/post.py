@@ -53,7 +53,6 @@ def check_post(post: ToRPost, Notify: object) -> NoReturn:
     duplicates = duplicate(post)
     if len(duplicates["flaired"]) > 0 or len(duplicates["unflaired"]) > 0:
         Notify.Notification.new("Found cloned post.").show()
-        print(duplicates)
         for i in duplicates["unflaired"]:
             Log.new(
                 (
@@ -61,14 +60,14 @@ def check_post(post: ToRPost, Notify: object) -> NoReturn:
                     if Globals.REMOVE else
                     f"Found unflaired clone at: https://reddit.com{i.permalink}"
                 ),
-                "INFO"
+                "CLONE"
             )
             if Globals.REMOVE: post.remove()
         for i in duplicates["flaired"]:
             Log.new(
                 f"Found flaired clone at https://reddit.com{i.permalink},"
                 + " moderator action required.",
-                "INFO"
+                "CLONE"
             )
     else:
         Log.new(f"Skipping post at: https://reddit.com{post.permalink}.", "DEBUG")
