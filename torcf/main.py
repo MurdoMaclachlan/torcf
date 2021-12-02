@@ -66,7 +66,8 @@ def clone_finder() -> NoReturn:
                 ) as progress:
                 for post in Globals.posts:
                     check_post(post, Notify)
-                    find_wanted(post)
+                    if Globals.CHECK_FOR_SUB:
+                        find_wanted(post, Notify)
                     progress()
 
             # Write out any updated post data

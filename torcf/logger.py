@@ -92,7 +92,7 @@ class Logger:
                 self.new("Unknown mode passed to Logger.get().", "WARNING")
                 return ""
 
-    def get_time(self: object, method: str ="time") -> str:
+    def get_time(self: object, method: str = "time") -> str:
         """Gets the current time and parses it to a human-readable format.
 
         Arguments:
