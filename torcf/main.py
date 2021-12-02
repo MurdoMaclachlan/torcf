@@ -51,10 +51,9 @@ def clone_finder() -> NoReturn:
         # Fetch posts and set shit up
         Log.new("Fetching posts...", "INFO")
         post_list = reddit.subreddit("transcribersofreddit").new(limit=500)
-        Log.new("Posts fetched; generating list...", "INFO")
 
         if not Globals.check_skip(post_list):
-            Log.new("Processing list...", "INFO")
+            Log.new("Posts fetched; generating list...", "INFO")
             with alive_bar(
                     500, spinner='classic', bar='classic', enrich_print=False
                 ) as progress:
