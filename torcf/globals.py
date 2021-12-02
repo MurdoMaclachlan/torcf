@@ -50,19 +50,18 @@ class GlobalVars:
         - process_args(): process runtime arguments.
     """
     def __init__(self: object):
-        # Arguments declared here as None will be properly initialised later in the
-        # run-time
+        # Attributes declared here as None will be properly initialised later in the
+        # run-time, depending on what arguments are passed
         self.CHECK_FOR_SUB = None
         self.REMOVE = None
+        self.SUBREDDITS = None
         self.VERBOSE = None
         self.WAIT = None
+        self.WANTED_POSTS = None
+        # Attributes declared here should have constant initial values
         self.first_post_url = ""
         self.posts = []
-        self.VERSION = "1.0.0-dev13-2021202"
-        # Don't create these attributes unless they're going to be used
-        if self.CHECK_FOR_SUB:
-            self.SUBREDDITS = None
-            self.WANTED_POSTS = []
+        self.VERSION = "1.0.0-dev14-2021202"
 
     def check_skip(self: object, post_list: Iterable) -> bool:
         """Using the first_post_url value, check whether or not we should skip this
@@ -128,6 +127,7 @@ class GlobalVars:
         self.SUBREDDITS = input(
             "Please enter the subreddits to search for, separated by spaces.\n  >> "
         ).split(" ")
+        self.WANTED_POSTS = []
 
     def process_args(self: object, argv: List, Log: object) -> NoReturn:
         """Process any passed runtime arguments.
