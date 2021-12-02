@@ -61,7 +61,7 @@ class GlobalVars:
         # Attributes declared here should have constant initial values
         self.first_post_url = ""
         self.posts = []
-        self.VERSION = "1.0.0-dev15-2021202"
+        self.VERSION = "1.0.0-dev16-2021202"
 
     def check_skip(self: object, post_list: Iterable) -> bool:
         """Using the first_post_url value, check whether or not we should skip this
@@ -126,7 +126,7 @@ class GlobalVars:
         """
         self.SUBREDDITS = input(
             "Please enter the subreddits to search for, separated by spaces.\n  >> "
-        ).split(" ")
+        ).casefold().split(" ")
         self.WANTED_POSTS = []
 
     def process_args(self: object, argv: List, Log: object) -> NoReturn:
@@ -160,7 +160,7 @@ class ToRPost:
         self.flair = self.praw_obj.link_flair_text
         self.orig_link = self.praw_obj.url
         self.permalink = self.praw_obj.permalink
-        self.subreddit = self.praw_obj.title.split(" |")[0]
+        self.subreddit = self.praw_obj.title.split(" |")[0].casefold()
 
     def update_flair(self: object, new_flair: str) -> NoReturn:
         """Updates the currently stores flair of the ToRPost with a new, given one.

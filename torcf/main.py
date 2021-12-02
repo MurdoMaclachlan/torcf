@@ -65,7 +65,8 @@ def clone_finder() -> NoReturn:
 
             Log.new("Checking for clones...", "INFO")
             with alive_bar(
-                    500, spinner='classic', bar='classic', enrich_print=False
+                    len(Globals.posts),
+                    spinner='classic', bar='classic', enrich_print=False
                 ) as progress:
                 for post in Globals.posts:
                     check_post(post, Notify)
