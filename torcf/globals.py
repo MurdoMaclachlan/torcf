@@ -57,9 +57,7 @@ class GlobalVars:
         self.VERSION = "1.0.0-dev12-2021202"
         self.WAIT = 30
         if self.CHECK_FOR_SUB:
-            self.SUBREDDITS = input(
-                "Please enter the subreddits to search for, separated by spaces\n >> "
-            ).split(" ")
+            self.SUBREDDITS = None
             self.WANTED_POSTS = []
 
     def check_skip(self: object, post_list: Iterable) -> bool:
@@ -90,6 +88,17 @@ class GlobalVars:
         No return value.
         """
         del self.posts[:]
+
+    def get_subs(self: object) -> NoReturn:
+        """Get, from user input, a list of subreddits from which to search for posts.
+
+        No arguments.
+
+        No return value.
+        """
+        self.SUBREDDITS = input(
+            "Please enter the subreddits to search for, separated by spaces.\n  >> "
+        ).split(" ")
 
 
 class ToRPost:

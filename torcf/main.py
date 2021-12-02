@@ -41,6 +41,8 @@ def clone_finder() -> NoReturn:
     Notify.init("Clone Finder")
     Log.new(f"Running Clone Finder version {Globals.VERSION}", "NOSCOPE")
     reddit = init()
+    if Globals.CHECK_FOR_SUB:
+        Globals.get_subs()
 
     while True:
 
@@ -85,5 +87,4 @@ def clone_finder() -> NoReturn:
 
         Log.output()
         Globals.clean()
-
         sleep(Globals.WAIT)
