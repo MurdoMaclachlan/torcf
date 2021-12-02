@@ -24,7 +24,8 @@ print(
     "Copyright (C) 2020-present, Murdo B. Maclachlan\n"
     "This program comes with ABSOLUTELY NO WARRANTY.\n"
     "This is free software, and you are welcome to redistribute it\n"
-    "under certain conditions; see LICENCE in dist-info for conditions."
+    "under certain conditions; see LICENCE in dist-info for conditions.\n"
+    "------------------------------------------------------------------"
 )
 
 clone_finder()
