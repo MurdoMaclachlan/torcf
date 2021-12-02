@@ -12,14 +12,16 @@ The second, far rarer type of clone, which I call a "Hard Clone", does have a fl
 
 Being a program I wrote originally for personal use, this program does not have anything built in for editing config or setting up praw.ini. The process for setting it up is very simple; it enforces the use of refresh tokens, so simply create an app for it, copy in the client id and secret and your username, and it will guide you through the remainder of the authentication process. 
 
-To edit config options, simply change the values hardcoded into the program. The config options are:
+Config is done through a simple run-time argument system. When you run the `clone_finder` script in the terminal, you can pass the following options:
 
-- `Globals.CHECK_FOR_SUB`; set to False by default. This allows the user to enter partner subs to search for at the start of program run-time. TCF will detect any posts from these partners and keep a log of their link and current flair in `post_list.txt`, in the data folder.
-- `Globals.REMOVE`; set to False by default. If True, this will remove any soft clones it finds. Note that this will crash your program if you do not have moderator permissions. Even if you do have moderator permissions, it is **not recommended to set this as True** until further testing is done to make sure non-clones are not accidentally removed.
-- `Globals.VERBOSE`; set to False by default. If True, this gives a desktop notification whenever it skips a cycle.
-- `Globals.WAIT`; set to 30 by default. This is the number of seconds with the program waits between cycles.
+- `--check` or `-c`; tells TCF to check for any posts from a list of partner subs (which it will prompt you to enter), keeping a log of their link and current flair in `post_list.txt`, in the data folder.
+- `--remove` or `-v`; tells TCF to remove any soft clones it finds. Note that this will crash your program if you do not have moderator permissions. Even if you do have moderator permissions, it is **not recommended to set this as True** until further testing is done to make sure non-clones are not accidentally removed.
+- `--verbose`, or `-v`; tells TCF to send a desktop notification whenever it skips a cycle.
+- `--wait` or `-w`; allows you to enter a custom number of seconds for TCF to wait between cycles. The number should be given immediately succeeding the argument, separated by a single space, like so: `--wait 60`. The default wait time, if TCF cannot parse the argument or it is not passed, is 30 seconds.
 
-There is also configuration available for the logger, by changing the optional arguments that are passed to its scopes. If a value of `0` is passed, debug statements of that scope will be disabled. If `1` is passed, they will be sent to the console but not the log file, and if `2` is passed, they will be sent to the console and saved to the log file. The available scopes are:
+There is also configuration available for the logger, by changing the optional arguments that are passed to its scopes. Currently, there is no functionality for easily changing these; the values must be edited in the code.
+
+If a value of `0` is passed to a scope, statements of that scope will be disabled. If `1` is passed, they will be sent to the console but not the log file, and if `2` is passed, they will be sent to the console and saved to the log file. The available scopes are:
 
 - `CLONE`: A notification that a clone has been found. Default: 2
 - `DEBUG`: Information for debugging the program. Default: 0

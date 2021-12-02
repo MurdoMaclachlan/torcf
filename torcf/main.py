@@ -21,6 +21,7 @@ from alive_progress import alive_bar
 from gi import require_version
 require_version('Notify', '0.7')
 from gi.repository import Notify
+from sys import argv
 from time import sleep
 from typing import NoReturn
 from .auth import init
@@ -40,6 +41,7 @@ def clone_finder() -> NoReturn:
     """
     Notify.init("Clone Finder")
     Log.new(f"Running Clone Finder version {Globals.VERSION}", "NOSCOPE")
+    Globals.process_args(argv, Log)
     reddit = init()
     if Globals.CHECK_FOR_SUB:
         Globals.get_subs()

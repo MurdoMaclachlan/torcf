@@ -17,7 +17,9 @@
     Contact me at murdomaclachlan@duck.com
 """
 
-from typing import Iterable, NoReturn
+from typing import Iterable, List, NoReturn
+
+global Globals
 
 
 class GlobalVars:
@@ -31,7 +33,6 @@ class GlobalVars:
         - posts (list): a list of ToRPost objects.
         - REMOVE (bool): whether or not unflaired clones should be automatically removed
         by the program.
-        - skip (bool): whether or not the current cycle should be skipped.
         - VERBOSE (bool): whether or not the program should send desktop notifications
         when clones are found.
         - VERSION (str): the current version of the program.
@@ -42,20 +43,23 @@ class GlobalVars:
         that have been found from the partners in SUBREDDITS.
 
     Methods:
+        - check_skip(): checks whether or not the current cycle should be skipped.
         - clean(): empties the list of posts.
+        - determine_wait(): determine how many seconds to wait between cycles.
+        - get_subs(): get a list of subs to search for posts from.
+        - process_args(): process runtime arguments.
     """
     def __init__(self: object):
-        self.CHECK_FOR_SUB = True
+        # Arguments declared here as None will be properly initialised later in the
+        # run-time
+        self.CHECK_FOR_SUB = None
+        self.REMOVE = None
+        self.VERBOSE = None
+        self.WAIT = None
         self.first_post_url = ""
         self.posts = []
-        # Remove found clones; recommended to keep disabled in the testing phase. Will
-        # always need to be disabled if you aren't a moderator, as you won't have this
-        # permission.
-        self.REMOVE = False
-        self.skip = False
-        self.VERBOSE = False
-        self.VERSION = "1.0.0-dev12-2021202"
-        self.WAIT = 30
+        self.VERSION = "1.0.0-dev13-2021202"
+        # Don't create these attributes unless they're going to be used
         if self.CHECK_FOR_SUB:
             self.SUBREDDITS = None
             self.WANTED_POSTS = []
@@ -89,8 +93,33 @@ class GlobalVars:
         """
         del self.posts[:]
 
+    def determine_wait(self: object, argv: List, Log: object) -> int:
+        """Determine the number of seconds TCF should wait between cycles. Default to
+        30 if no valid value is passed.
+
+        Arguments:
+            - argv (List): the arguments passed on running TCF
+
+        Returns: the number of seconds the program should wait, either:
+            - the argument directly succeeding "--wait"/"-w" in argv
+            - default of 30 if that argument does not exist or cannot be cast to an int
+        """
+        index = (
+            argv.index("--wait")
+            if "--wait" in argv else
+            argv.index("-w")
+        )
+        try:
+            return int(argv[index+1])
+        except (IndexError, ValueError):
+            Log.new(
+                f"{argv[index]} was passed with no subsequent value; defaulting to 30.",
+                "WARNING"
+            )
+            return 30
+
     def get_subs(self: object) -> NoReturn:
-        """Get, from user input, a list of subreddits from which to search for posts.
+        """Get, from user input, a list of subreddits to search for posts from.
 
         No arguments.
 
@@ -100,6 +129,22 @@ class GlobalVars:
             "Please enter the subreddits to search for, separated by spaces.\n  >> "
         ).split(" ")
 
+    def process_args(self: object, argv: List, Log: object) -> NoReturn:
+        """Process any passed runtime arguments.
+
+        Arguments:
+            - argv: the list of runtime arguments
+
+        No return value.
+        """
+        self.CHECK_FOR_SUB = ("--check" in argv or "-c" in argv)
+        self.REMOVE = ("--remove" in argv or "-r" in argv)
+        self.VERBOSE = ("--verbose" in argv or "-v" in argv)
+        self.WAIT = (
+            30
+            if not ("--wait" in argv or "-w" in argv) else
+            self.determine_wait(argv, Log)
+        )
 
 class ToRPost:
     """Represents an instance of a post on the r/TranscribersOfReddit subreddit, with
