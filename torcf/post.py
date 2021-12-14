@@ -126,7 +126,6 @@ def find_wanted(post: ToRPost, Notify: object) -> NoReturn:
         ].update_flair(post.flair)
 
 
-
 def update_post_list() -> NoReturn:
     """Write out current data within Gloabls.WANTED_POSTS to the post_list file,
     overwriting the data that was previously in that file.
