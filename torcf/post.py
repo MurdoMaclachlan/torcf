@@ -121,10 +121,6 @@ def find_wanted(post: ToRPost, Notify: object) -> NoReturn:
     # by updating the already logged post's flair with the new
     # ToRPost instance's flair
     elif match_sub and post in Globals.WANTED_POSTS:
-        print("POST TO CHECK"+post.permalink)
-        for i in Globals.REMOVED_POSTS:
-            if i.split("/")[5].split("_")[0] in Globals.SUBREDDITS:
-                print("OTHER POST"+i)
         Globals.WANTED_POSTS[
             Globals.WANTED_POSTS.index(post)
         ].update_flair(post.flair)
