@@ -152,7 +152,10 @@ def check_mod_log(modlog: Iterable) -> NoReturn:
             Globals.REMOVED_POSTS.append(log.target_permalink)
 
     for post in Globals.WANTED_POSTS:
-        if post.permalink in Globals.REMOVED_POSTS:
+        if (
+            post.flair != "Completed!"
+            and post.permalink in Globals.REMOVED_POSTS
+        ):
             Globals.WANTED_POSTS[
                 Globals.WANTED_POSTS.index(post)
             ].update_flair("Removed")
