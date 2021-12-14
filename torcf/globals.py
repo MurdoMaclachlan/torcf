@@ -53,15 +53,17 @@ class GlobalVars:
         # Attributes declared here as None will be properly initialised later in the
         # run-time, depending on what arguments are passed
         self.CHECK_FOR_SUB = None
+        self.MODLOG = None
         self.REMOVE = None
         self.SUBREDDITS = None
         self.VERBOSE = None
         self.WAIT = None
+        self.REMOVED_POSTS = None
         self.WANTED_POSTS = None
         # Attributes declared here should have constant initial values
         self.first_post_url = ""
         self.posts = []
-        self.VERSION = "1.0.0-dev16-2021202"
+        self.VERSION = "1.0.0-dev17-2021214"
 
     def check_skip(self: object, post_list: Iterable) -> bool:
         """Using the first_post_url value, check whether or not we should skip this
@@ -91,6 +93,7 @@ class GlobalVars:
         No return value.
         """
         del self.posts[:]
+        del self.REMOVED_POSTS[:]
 
     def determine_wait(self: object, argv: List, Log: object) -> int:
         """Determine the number of seconds TCF should wait between cycles. Default to
@@ -120,13 +123,12 @@ class GlobalVars:
     def get_subs(self: object) -> NoReturn:
         """Get, from user input, a list of subreddits to search for posts from.
 
-        No arguments.
-
-        No return value.
+        :return: Nothing
         """
         self.SUBREDDITS = input(
             "Please enter the subreddits to search for, separated by spaces.\n  >> "
         ).casefold().split(" ")
+        self.REMOVED_POSTS = []
         self.WANTED_POSTS = []
 
     def process_args(self: object, argv: List, Log: object) -> NoReturn:
@@ -138,6 +140,7 @@ class GlobalVars:
         No return value.
         """
         self.CHECK_FOR_SUB = ("--check" in argv or "-c" in argv)
+        self.MODLOG = ("--modlog" in argv or "-m" in argv)
         self.REMOVE = ("--remove" in argv or "-r" in argv)
         self.VERBOSE = ("--verbose" in argv or "-v" in argv)
         self.WAIT = (

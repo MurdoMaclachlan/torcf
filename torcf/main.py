@@ -27,7 +27,7 @@ from typing import NoReturn
 from .auth import init
 from .globals import Globals
 from .logger import Log
-from .post import add_post, check_post, find_wanted, update_post_list
+from .post import add_post, check_mod_log, check_post, find_wanted, update_post_list
 
 global Globals, Log
 
@@ -76,6 +76,12 @@ def clone_finder() -> NoReturn:
 
             # Write out any updated post data
             if Globals.CHECK_FOR_SUB:
+                if Globals.MODLOG:
+                    check_mod_log(
+                        reddit.subreddit('transcribersofreddit').mod.log(
+                            limit=500
+                        )
+                    )
                 update_post_list()
             Log.new(
                 f"Finished checking all posts, waiting {Globals.WAIT} seconds.",

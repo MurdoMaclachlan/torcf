@@ -18,7 +18,7 @@
 """
 
 from praw.models import Submission
-from typing import Dict, NoReturn
+from typing import Dict, Iterable, NoReturn
 from .globals import Globals, ToRPost
 from .logger import Log
 
@@ -107,10 +107,10 @@ def find_wanted(post: ToRPost, Notify: object) -> NoReturn:
     """Check if the post originates on a partner sub we're searching for, either adding
     it to the list of wanted posts, or updating its flair on that list.
 
-    Arguments:
-        - post (ToRPost): the post to check.
+    :param post: (ToRPost): the post to check.
+    :param Notify: (gi.Notify object): the desktop notification manager.
 
-    No return value.
+    :return: Nothing
     """
     match_sub = (post.subreddit in Globals.SUBREDDITS)
     # If this post has yet to be found, add it to the list
@@ -121,18 +121,21 @@ def find_wanted(post: ToRPost, Notify: object) -> NoReturn:
     # by updating the already logged post's flair with the new
     # ToRPost instance's flair
     elif match_sub and post in Globals.WANTED_POSTS:
+        print("POST TO CHECK"+post.permalink)
+        for i in Globals.REMOVED_POSTS:
+            if i.split("/")[5].split("_")[0] in Globals.SUBREDDITS:
+                print("OTHER POST"+i)
         Globals.WANTED_POSTS[
             Globals.WANTED_POSTS.index(post)
         ].update_flair(post.flair)
+
 
 
 def update_post_list() -> NoReturn:
     """Write out current data within Gloabls.WANTED_POSTS to the post_list file,
     overwriting the data that was previously in that file.
 
-    No arguments.
-
-    No return value.
+    :return: Nothing
     """
     with open("data/post_list.txt", "w+") as post_file:
         for i in Globals.WANTED_POSTS:
@@ -141,3 +144,20 @@ def update_post_list() -> NoReturn:
                 + f" {i.flair} |"
                 + f" https://reddit.com{i.permalink}\n"
             )
+
+def check_mod_log(modlog: Iterable) -> NoReturn:
+    """Checks the mod log of r/TranscribersOfReddit for any post removals.
+
+    :param modlog: a praw modlog object
+
+    :return: Nothing
+    """
+    for log in modlog:
+        if log.action == "removelink":
+            Globals.REMOVED_POSTS.append(log.target_permalink)
+
+    for post in Globals.WANTED_POSTS:
+        if post.permalink in Globals.REMOVED_POSTS:
+            Globals.WANTED_POSTS[
+                Globals.WANTED_POSTS.index(post)
+            ].update_flair("Removed")
