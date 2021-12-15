@@ -18,6 +18,7 @@
 """
 
 from datetime import datetime
+from os import remove
 from time import time
 from typing import List, NoReturn, Union
 
@@ -52,6 +53,7 @@ class Logger:
             "INFO":    info,    # general information for the user
             "WARNING": warning  # things that could cause errors later on
         }
+        self.__write_logs = False
 
     def get(
             self: object,
@@ -66,7 +68,7 @@ class Logger:
             be returned
 
         Returns: a single log entry (string), list of log entries (string array), or
-                 an empty string on a failure.
+                 an empty string on a failure.log_len = 0
         """
         if scope is None:
             # Tuple indexing provides a succint way to determine what to return
@@ -123,11 +125,8 @@ class Logger:
                 "at+"
         ) as log_file:
             for line in self.__log:
-                try:
-                    if self.__scopes[line.scope] == 2:
-                        log_file.write(line.rendered + "\n")
-                except KeyError:
-                    pass
+                if line.output:
+                    log_file.write(line.rendered + "\n")
 
     def new(
             self: object,
@@ -146,12 +145,16 @@ class Logger:
         """
         if scope in self.__scopes or scope == "NOSCOPE":
             # Create and save the log entry
-            entry = LogEntry(message, scope, self.get_time())
+            entry = LogEntry(
+                message,
+                (self.__scopes[scope] == 2),
+                scope,
+                self.get_time()
+            )
             self.__log.append(entry)
             # A select few messages have no listed scope and should always be printed
             if scope == "NOSCOPE":
                 print(entry.rendered)
-                return True
             # If the scope's value is 1 or greater it should be printed
             elif self.__scopes[scope]:
                 print(
@@ -159,7 +162,7 @@ class Logger:
                     if not do_not_print
                     else None
                 )
-                return True
+            return True
         else:
             self.new("Unknown scope passed to Logger.new()", "WARNING")
         return False
@@ -171,14 +174,15 @@ class LogEntry:
     Logger.get() method.
 
     Attributes:
-    - message (str): the information conveyed by the entry
-    - scope (str): the scope of the entry
-    - timestamp (str): the formatted time at which the entry was created
-    - rendered (str): the full rendered message that will be printed to the user or
+        - message (str): the information conveyed by the entry
+        - scope (str): the scope of the entry
+        - timestamp (str): the formatted time at which the entry was created
+        - rendered (str): the full rendered message that will be printed to the user or
                       saved to the log file
     """
-    def __init__(self: object, message: str, scope: str, timestamp: str):
+    def __init__(self: object, message: str, output: bool, scope: str, timestamp: str):
         self.message = message
+        self.output = output
         self.scope = scope
         self.timestamp = timestamp
         self.rendered = (
