@@ -18,7 +18,6 @@
 """
 
 from datetime import datetime
-from os import remove
 from time import time
 from typing import List, NoReturn, Union
 
