@@ -114,15 +114,15 @@ def find_wanted(post: ToRPost, Notify: object) -> NoReturn:
     """
     match_sub = (post.subreddit in Globals.SUBREDDITS)
     # If this post has yet to be found, add it to the list
-    if match_sub and post not in Globals.WANTED_POSTS:
+    if match_sub and post not in Globals.wanted_posts:
         Notify.Notification.new(f"Found {post.subreddit} post.").show()
-        Globals.WANTED_POSTS.append(post)
+        Globals.wanted_posts.append(post)
     # If this post has been found, ensure its flair is up to date
     # by updating the already logged post's flair with the new
     # ToRPost instance's flair
-    elif match_sub and post in Globals.WANTED_POSTS:
-        Globals.WANTED_POSTS[
-            Globals.WANTED_POSTS.index(post)
+    elif match_sub and post in Globals.wanted_posts:
+        Globals.wanted_posts[
+            Globals.wanted_posts.index(post)
         ].update_flair(post.flair)
 
 
@@ -133,7 +133,7 @@ def update_post_list() -> NoReturn:
     :return: Nothing
     """
     with open("data/post_list.txt", "w+") as post_file:
-        for i in Globals.WANTED_POSTS:
+        for i in Globals.wanted_posts:
             post_file.write(
                 f"{i.subreddit} |"
                 + f" {i.flair} |"
@@ -149,13 +149,13 @@ def check_mod_log(modlog: Iterable) -> NoReturn:
     """
     for log in modlog:
         if log.action == "removelink":
-            Globals.REMOVED_POSTS.append(log.target_permalink)
+            Globals.removed_posts.append(log.target_permalink)
 
-    for post in Globals.WANTED_POSTS:
+    for post in Globals.wanted_posts:
         if (
             post.flair != "Completed!"
-            and post.permalink in Globals.REMOVED_POSTS
+            and post.permalink in Globals.removed_posts
         ):
             Globals.WANTED_POSTS[
-                Globals.WANTED_POSTS.index(post)
+                Globals.wanted_posts.index(post)
             ].update_flair("Removed")

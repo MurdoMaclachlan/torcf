@@ -58,12 +58,12 @@ class GlobalVars:
         self.SUBREDDITS = None
         self.VERBOSE = None
         self.WAIT = None
-        self.REMOVED_POSTS = None
-        self.WANTED_POSTS = None
+        self.removed_posts = None
+        self.wanted_posts = None
         # Attributes declared here should have constant initial values
         self.first_post_url = ""
         self.posts = []
-        self.VERSION = "1.0.0-dev17-2021214"
+        self.VERSION = "1.0.0-dev18-2021215"
 
     def check_skip(self: object, post_list: Iterable) -> bool:
         """Using the first_post_url value, check whether or not we should skip this
@@ -93,7 +93,7 @@ class GlobalVars:
         No return value.
         """
         del self.posts[:]
-        del self.REMOVED_POSTS[:]
+        del self.removed_posts[:]
 
     def determine_wait(self: object, argv: List, Log: object) -> int:
         """Determine the number of seconds TCF should wait between cycles. Default to
@@ -128,8 +128,8 @@ class GlobalVars:
         self.SUBREDDITS = input(
             "Please enter the subreddits to search for, separated by spaces.\n  >> "
         ).casefold().split(" ")
-        self.REMOVED_POSTS = []
-        self.WANTED_POSTS = []
+        self.removed_posts = []
+        self.wanted_posts = []
 
     def process_args(self: object, argv: List, Log: object) -> NoReturn:
         """Process any passed runtime arguments.
