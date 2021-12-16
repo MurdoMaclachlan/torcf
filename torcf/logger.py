@@ -146,7 +146,7 @@ class Logger:
             # Create and save the log entry
             entry = LogEntry(
                 message,
-                (self.__scopes[scope] == 2),
+                (self.__scopes[scope] == 2) if scope != "NOSCOPE" else False,
                 scope,
                 self.get_time()
             )
