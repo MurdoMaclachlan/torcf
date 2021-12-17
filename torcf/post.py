@@ -156,6 +156,6 @@ def check_mod_log(modlog: Iterable) -> NoReturn:
             post.flair != "Completed!"
             and post.permalink in Globals.removed_posts
         ):
-            Globals.WANTED_POSTS[
+            Globals.wanted_posts[
                 Globals.wanted_posts.index(post)
             ].update_flair("Removed")
