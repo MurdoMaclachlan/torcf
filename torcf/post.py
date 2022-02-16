@@ -68,6 +68,10 @@ def check_post(post: ToRPost, Notify: object) -> NoReturn:
                 + " moderator action required.",
                 "CLONE"
             )
+            if Globals.REMOVE:
+                post.remove()
+            else:
+                Log.new("NOT removing the above clone.", "CLONE")
     else:
         Log.new(f"Skipping post at: https://reddit.com{post.permalink}.", "DEBUG")
 
@@ -88,14 +92,11 @@ def duplicate(post: ToRPost) -> Dict:
     # Skipping the queue before the post is safe to do, as we will have already checked
     # that portion for clones
     for i in Globals.posts[Globals.posts.index(post)+1:]:
-        # Flaired clones are very rare but occasionally happen. The reason for them has
-        # yet to be diagnosed, and we will keep them separate so they can be manually
-        # inspected.
+        # Flaired clones are now the only type of clone that should appear.
         if i == post and i.flair is not None:
             duplicates["flaired"].append(i)
-        # Unflaired clones are the most common, arising from a Reddit API bug which
-        # causes a failure somewhere in the flairing process, forcing Blossom to re-
-        # submit the post.
+        # Unflaired clones are now extremely rare and theoretically should not happen,
+        # but we will keep checking for them just in case.
         elif i == post and i.flair is None:
             duplicates["unflaired"].append(i)
         else:
@@ -139,6 +140,7 @@ def update_post_list() -> NoReturn:
                 + f" {i.flair} |"
                 + f" https://reddit.com{i.permalink}\n"
             )
+
 
 def check_mod_log(modlog: Iterable) -> NoReturn:
     """Checks the mod log of r/TranscribersOfReddit for any post removals.

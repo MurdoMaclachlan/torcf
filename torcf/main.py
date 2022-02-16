@@ -16,20 +16,21 @@
 
     Contact me at murdomaclachlan@duck.com
 """
-
-from alive_progress import alive_bar
+import signal
 from gi import require_version
 require_version('Notify', '0.7')
 from gi.repository import Notify
+from smooth_progress import ProgressBar
 from sys import argv
+from sys import exit as sysexit
 from time import sleep
-from typing import NoReturn
+from typing import Any, NoReturn
 from .auth import init
 from .globals import Globals
 from .logger import Log
 from .post import add_post, check_mod_log, check_post, find_wanted, update_post_list
 
-global Globals, Log
+global bar, Globals, Log
 
 
 def clone_finder() -> NoReturn:
@@ -39,10 +40,13 @@ def clone_finder() -> NoReturn:
 
     No return value.
     """
+    global bar
+
     Notify.init("Clone Finder")
     Log.new(f"Running Clone Finder version {Globals.VERSION}", "NOSCOPE")
     Globals.process_args(argv, Log)
     reddit = init()
+    signal.signal(signal.SIGINT, signal_handler)
     if Globals.CHECK_FOR_SUB:
         Globals.get_subs()
 
@@ -52,47 +56,61 @@ def clone_finder() -> NoReturn:
         Log.new("Fetching posts...", "INFO")
         post_list = reddit.subreddit("transcribersofreddit").new(limit=500)
 
-        if not Globals.check_skip(post_list):
-            Log.new("Posts fetched; generating list...", "INFO")
-            with alive_bar(
-                    500, spinner='classic', bar='classic', enrich_print=False
-                ) as progress:
+        with ProgressBar(limit=500) as bar:
+            if not Globals.check_skip(post_list):
+                Log.new("Posts fetched; generating list...", "INFO")
                 # Iterate over posts and initialise each one as a ToRPost for easier
                 # management
+                bar.open()
                 for post in post_list:
                     add_post(post)
-                    progress()
-
-            Log.new("Checking for clones...", "INFO")
-            with alive_bar(
-                    len(Globals.posts),
-                    spinner='classic', bar='classic', enrich_print=False
-                ) as progress:
+                    bar.increment()
+                bar.close()
+                Log.new("Checking for clones...", "INFO")
+                bar.open()
                 for post in Globals.posts:
                     check_post(post, Notify)
                     if Globals.CHECK_FOR_SUB:
                         find_wanted(post, Notify)
-                    progress()
+                    bar.increment()
+                bar.close()
 
-            # Write out any updated post data
-            if Globals.CHECK_FOR_SUB:
-                if Globals.MODLOG:
-                    check_mod_log(
-                        reddit.subreddit('transcribersofreddit').mod.log(
-                            limit=500
+                # Write out any updated post data
+                if Globals.CHECK_FOR_SUB:
+                    if Globals.MODLOG:
+                        check_mod_log(
+                            reddit.subreddit('transcribersofreddit').mod.log(
+                                limit=500
+                            )
                         )
-                    )
-                update_post_list()
-            Log.new(
-                f"Finished checking all posts, waiting {Globals.WAIT} seconds.",
-                "INFO"
-            )
-        else:
-            Log.new("No new posts since last check, skipping cycle.", "INFO")
-            if Globals.VERBOSE:
-                Notify.Notification.new("Skipping cycle.").show()
-            Log.new(f"Waiting {Globals.WAIT} seconds.", "INFO")
-
+                    update_post_list()
+                Log.new(
+                    f"Finished checking all posts, waiting {Globals.WAIT} seconds.",
+                    "INFO"
+                )
+            else:
+                Log.new("No new posts since last check, skipping cycle.", "INFO")
+                if Globals.VERBOSE:
+                    Notify.Notification.new("Skipping cycle.").show()
+                Log.new(f"Waiting {Globals.WAIT} seconds.", "INFO")
         Log.output()
         Globals.clean()
         sleep(Globals.WAIT)
+
+
+def signal_handler(sig: int, frame: Any) -> NoReturn:
+    """Gracefully exit; don't lose any as-yet unsaved log entries.
+
+    :param sig: int
+    :param frame: Any
+
+    :return: Nothing.
+    """
+    try:
+        global bar
+        bar.close()
+    except Exception:
+        pass
+    Log.new("Received kill signal, exiting...", "INFO")
+    Log.output()
+    sysexit(0)

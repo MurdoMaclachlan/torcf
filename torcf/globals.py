@@ -166,7 +166,7 @@ class ToRPost:
         self.subreddit = self.praw_obj.title.split(" |")[0].casefold()
 
     def update_flair(self: object, new_flair: str) -> NoReturn:
-        """Updates the currently stores flair of the ToRPost with a new, given one.
+        """Updates the currently stored flair of the ToRPost with a new, given one.
 
         Arguments:
         - new_flair (string)
@@ -183,7 +183,7 @@ class ToRPost:
 
         No return value.
         """
-        self.praw_obj.mod.remove(mod_note="Cloned post.")
+        self.praw_obj.mod.remove(mod_note="Cloned post. (automatic removal)")
 
 
 Globals = GlobalVars()
