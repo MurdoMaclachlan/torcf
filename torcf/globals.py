@@ -63,7 +63,7 @@ class GlobalVars:
         # Attributes declared here should have constant initial values
         self.first_post_url = ""
         self.posts = []
-        self.VERSION = "1.0.0-dev22-20220216"
+        self.VERSION = "1.0.0-dev23-20220219"
 
     def check_skip(self: object, post_list: Iterable) -> bool:
         """Using the first_post_url value, check whether or not we should skip this
@@ -112,10 +112,11 @@ class GlobalVars:
             argv.index("-w")
         )
         try:
-            return int(argv[index+1])
+            return abs(int(argv[index+1]))
         except (IndexError, ValueError):
             Log.new(
-                f"{argv[index]} was passed with no subsequent value; defaulting to 30.",
+                f"{argv[index]} was passed with no subsequent time value; defaulting to"
+                + " 30.",
                 "WARNING"
             )
             return 30
