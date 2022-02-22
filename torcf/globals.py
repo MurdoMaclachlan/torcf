@@ -63,7 +63,7 @@ class GlobalVars:
         # Attributes declared here should have constant initial values
         self.first_post_url = ""
         self.posts = []
-        self.VERSION = "1.0.0-dev23-20220219"
+        self.VERSION = "1.0.0-dev24-20220222"
 
     def check_skip(self: object, post_list: Iterable) -> bool:
         """Using the first_post_url value, check whether or not we should skip this

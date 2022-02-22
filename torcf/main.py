@@ -54,9 +54,9 @@ def clone_finder() -> NoReturn:
 
         # Fetch posts and set shit up
         Log.new("Fetching posts...", "INFO")
-        post_list = reddit.subreddit("transcribersofreddit").new(limit=500)
+        post_list = reddit.subreddit("transcribersofreddit").new(limit=651)
 
-        with ProgressBar(limit=500) as bar:
+        with ProgressBar(limit=650) as bar:
             if not Globals.check_skip(post_list):
                 Log.new("Posts fetched; generating list...", "INFO")
                 # Iterate over posts and initialise each one as a ToRPost for easier
@@ -106,11 +106,15 @@ def signal_handler(sig: int, frame: Any) -> NoReturn:
 
     :return: Nothing.
     """
+    ret = True
     try:
         global bar
-        bar.close()
-    except Exception:
+        if bar.close():
+            ret = False
+    except NameError:
         pass
+    if ret:
+        print("\r", end="\r")
     Log.new("Received kill signal, exiting...", "INFO")
     Log.output()
     sysexit(0)
