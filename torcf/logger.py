@@ -119,13 +119,14 @@ class Logger:
 
         No return value.
         """
-        with open(
-                f"data/log-{self.get_time(method='date')}.txt",
-                "at+"
-        ) as log_file:
-            for line in self.__log:
-                if line.output:
-                    log_file.write(line.rendered + "\n")
+        if len(self.__log) > 0:
+            with open(
+                    f"data/log-{self.get_time(method='date')}.txt",
+                    "at+"
+            ) as log_file:
+                for line in self.__log:
+                    if line.output:
+                        log_file.write(line.rendered + "\n")
 
     def new(
             self: object,
