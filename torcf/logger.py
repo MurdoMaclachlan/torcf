@@ -44,6 +44,7 @@ class Logger:
         clone=2, debug=0, error=2, fatal=2, info=1, warning=2
     ) -> NoReturn:
         self.__log = []
+        self.__is_empty = True
         self.__scopes = {
             "CLONE":   clone,   # a notification of a found clone
             "DEBUG":   debug,   # information for debugging the program
@@ -119,7 +120,7 @@ class Logger:
 
         No return value.
         """
-        if len(self.__log) > 0:
+        if not self.__is_empty:
             with open(
                     f"data/log-{self.get_time(method='date')}.txt",
                     "at+"
@@ -145,13 +146,15 @@ class Logger:
         """
         if scope in self.__scopes or scope == "NOSCOPE":
             # Create and save the log entry
+            output = (self.__scopes[scope] == 2) if scope != "NOSCOPE" else False
             entry = LogEntry(
                 message,
-                (self.__scopes[scope] == 2) if scope != "NOSCOPE" else False,
+                output,
                 scope,
                 self.get_time()
             )
             self.__log.append(entry)
+            self.__is_empty = not output
             # A select few messages have no listed scope and should always be printed
             if scope == "NOSCOPE":
                 print(entry.rendered)
