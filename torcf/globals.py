@@ -86,7 +86,7 @@ class GlobalVars:
                 return False
 
     def clean(self: object) -> NoReturn:
-        """Deletes all currently stored members of self.POSTS.
+        """Deletes all currently stored members of self.posts.
 
         No arguments.
 
@@ -94,6 +94,17 @@ class GlobalVars:
         """
         del self.posts[:]
         del self.removed_posts[:]
+
+    def delete_post(self: object, permalink):
+        """Find and delete a single member of self.posts using a given permalink.
+
+        :param permalink: The permalink of the post to delete.
+
+        No return value.
+        """
+        for i in self.posts:
+            if i.permalink == permalink:
+                self.posts.remove(i)
 
     def determine_wait(self: object, argv: List, Log: object) -> int:
         """Determine the number of seconds TCF should wait between cycles. Default to
@@ -176,7 +187,7 @@ class ToRPost:
         """
         self.flair = new_flair
 
-    def remove(self: object) -> NoReturn:
+    def remove(self: object, GlobalHandler: object) -> NoReturn:
         """Removes the post from the ToR queue. Can only be invoked by moderators of
         r/TranscribersOfReddit; will crash the program if attempted by anyone else.
 
@@ -185,6 +196,7 @@ class ToRPost:
         No return value.
         """
         self.praw_obj.mod.remove(mod_note="Cloned post. (automatic removal)")
+        GlobalHandler.delete_post(self.permalink)
 
 
 Globals = GlobalVars()

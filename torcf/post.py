@@ -61,7 +61,8 @@ def check_post(post: ToRPost, Notify: object) -> NoReturn:
                 ),
                 "CLONE"
             )
-            if Globals.REMOVE: post.remove()
+            if Globals.REMOVE:
+                post.remove(Globals)
         for i in duplicates["flaired"]:
             Log.new(
                 f"Found flaired clone at https://reddit.com{i.permalink},"
@@ -69,7 +70,7 @@ def check_post(post: ToRPost, Notify: object) -> NoReturn:
                 "CLONE"
             )
             if Globals.REMOVE:
-                post.remove()
+                post.remove(Globals)
             else:
                 Log.new("NOT removing the above clone.", "CLONE")
     else:
