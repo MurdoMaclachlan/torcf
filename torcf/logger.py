@@ -55,10 +55,14 @@ class Logger:
         }
         self.__write_logs = False
 
+    def clean(self: object) -> None:
+        del self.__log[:]
+        self.__is_empty = True
+
     def get(
             self: object,
             mode: str = "all", scope: str = None
-        ) -> Union[List[str], str]:
+        ) -> Union[List[str], str, None]:
         """Returns item(s) in the log. What entries are returned can be controlled by
         passing optional arguments.
 
@@ -70,7 +74,9 @@ class Logger:
         Returns: a single log entry (string), list of log entries (string array), or
                  an empty string on a failure.log_len = 0
         """
-        if scope is None:
+        if self.__is_empty:
+            return ""
+        elif scope is None:
             # Tuple indexing provides a succint way to determine what to return
             return (self.__log, self.__log[len(self.__log)-1])[mode == "recent"]
         else:
@@ -128,6 +134,7 @@ class Logger:
                 for line in self.__log:
                     if line.output:
                         log_file.write(line.rendered + "\n")
+            self.clean()
 
     def new(
             self: object,

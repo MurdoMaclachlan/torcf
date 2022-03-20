@@ -5,7 +5,7 @@ As of this version, PRAW 7.5+ and smooth_progress 0.1+ are required. PyGObject 3
 - Restructured program, delegating many functions from main to other modules. (@MurdoMaclachlan)
 - Added and enforced refresh tokens for Reddit authentication. (@MurdoMaclachlan)
 - Added the ability to search for posts from a certain sub within the queue, keeping track of their flair and link in a .txt file and sending a desktop notification when a new post from that sub is found in the queue. (@MurdoMaclachlan)
-- Added various runtime arguments:
+- Added various runtime arguments (@MurdoMaclachlan):
     - --check, -c: determines whether to search for posts from a certain sub; prompts what subs to search for.
     - --modlog, -m: determines whether to check modlog; requires moderator privileges. Will allow tracking of removed posts.
     - --remove, -r: determines whether clones should be automatically removed; requires moderator privileges.
@@ -17,6 +17,8 @@ As of this version, PRAW 7.5+ and smooth_progress 0.1+ are required. PyGObject 3
 - Allowed gracefully handling kill signals such as CTRL+C instead of instantly dying. (@MurdoMaclachlan)
 - Prevented attempting to update or create a log file if the log is empty. (@MurdoMaclachlan)
 - Prevented attempting to update post_list.txt if there are no changes from the last cycle. (@MurdoMaclachlan)
+- Fixed duplicated output to log file, contributing to large file size. (@MurdoMaclachlan)
+- Fixed large memory usage after long runtime due to not clearing the log after each cycle. (@MurdoMaclachlan)
 - Fixed a typo in the README. (@MurdoMaclachlan)
 
 ## 0.5.1

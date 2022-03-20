@@ -39,8 +39,10 @@ class GlobalVars:
         - WAIT (int): the number of seconds the program should wait between cycles.
         - SUBREDDITS (str): only exists if CHECK_FOR_SUBS is true; the list of partners
         to check for posts from.
-        - WANTED_POSTS (list): only exists if CHECK_FOR_SUBS is true; the list of posts
+        - wanted_posts (list): only exists if CHECK_FOR_SUBS is true; the list of posts
         that have been found from the partners in SUBREDDITS.
+        - wanted_posts_last (list): only exists if CHECK_FOR_SUBS is true; the state of
+        wanted_posts at the last cycle.
 
     Methods:
         - check_skip(): checks whether or not the current cycle should be skipped.
@@ -64,7 +66,7 @@ class GlobalVars:
         # Attributes declared here should have constant initial values
         self.first_post_url = ""
         self.posts = []
-        self.VERSION = "1.0.0-dev26-20220320"
+        self.VERSION = "1.0.0-dev27-20220320"
 
     def check_skip(self: object, post_list: Iterable) -> bool:
         """Using the first_post_url value, check whether or not we should skip this
