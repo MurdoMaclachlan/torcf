@@ -80,10 +80,12 @@ def clone_finder() -> NoReturn:
                     if Globals.MODLOG:
                         check_mod_log(
                             reddit.subreddit('transcribersofreddit').mod.log(
-                                limit=500
+                                limit=650
                             )
                         )
-                    update_post_list()
+                    if Globals.wanted_posts != Globals.wanted_posts_last:
+                        update_post_list()
+                        Globals.wanted_posts_last = Globals.wanted_posts
                 Log.new(
                     f"Finished checking all posts, waiting {Globals.WAIT} seconds.",
                     "INFO"

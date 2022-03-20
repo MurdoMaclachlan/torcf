@@ -60,10 +60,11 @@ class GlobalVars:
         self.WAIT = None
         self.removed_posts = None
         self.wanted_posts = None
+        self.wanted_posts_last = None
         # Attributes declared here should have constant initial values
         self.first_post_url = ""
         self.posts = []
-        self.VERSION = "1.0.0-dev25-20220307"
+        self.VERSION = "1.0.0-dev26-20220320"
 
     def check_skip(self: object, post_list: Iterable) -> bool:
         """Using the first_post_url value, check whether or not we should skip this
@@ -142,6 +143,7 @@ class GlobalVars:
         ).casefold().split(" ")
         self.removed_posts = []
         self.wanted_posts = []
+        self.wanted_posts_last = []
 
     def process_args(self: object, argv: List, Log: object) -> NoReturn:
         """Process any passed runtime arguments.
