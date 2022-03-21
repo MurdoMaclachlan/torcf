@@ -19,7 +19,7 @@
 
 from datetime import datetime
 from time import time
-from typing import List, NoReturn, Union
+from typing import List, Union
 
 
 class Logger:
@@ -42,7 +42,7 @@ class Logger:
     def __init__(
         self: object,
         clone=2, debug=0, error=2, fatal=2, info=1, warning=2
-    ) -> NoReturn:
+    ) -> None:
         self.__log = []
         self.__is_empty = True
         self.__scopes = {
@@ -116,7 +116,7 @@ class Logger:
         else:
             print("ERROR: Bad method passed to Logger.get_time().")
 
-    def output(self: object) -> NoReturn:
+    def output(self: object) -> None:
         """Write all log entries with scopes set to save to a log file in a data folder
         in the working directory, creating the folder and file if they do not exist.
         The log files are marked with the date, so each new day, a new file will be

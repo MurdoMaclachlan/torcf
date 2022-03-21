@@ -24,7 +24,7 @@ from smooth_progress import ProgressBar
 from sys import argv
 from sys import exit as sysexit
 from time import sleep
-from typing import Any, NoReturn
+from typing import Any
 from .auth import init
 from .globals import Globals
 from .logger import Log
@@ -33,7 +33,7 @@ from .post import add_post, check_mod_log, check_post, find_wanted, update_post_
 global bar, Globals, Log
 
 
-def clone_finder() -> NoReturn:
+def clone_finder() -> None:
     """Primary function for TCF; handles all functionality and processes.
 
     No arguments.
@@ -100,7 +100,7 @@ def clone_finder() -> NoReturn:
         sleep(Globals.WAIT)
 
 
-def signal_handler(sig: int, frame: Any) -> NoReturn:
+def signal_handler(sig: int, frame: Any) -> None:
     """Gracefully exit; don't lose any as-yet unsaved log entries.
 
     :param sig: int

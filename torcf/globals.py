@@ -17,7 +17,7 @@
     Contact me at murdomaclachlan@duck.com
 """
 
-from typing import Iterable, List, NoReturn
+from typing import Iterable, List
 
 global Globals
 
@@ -66,7 +66,7 @@ class GlobalVars:
         # Attributes declared here should have constant initial values
         self.first_post_url = ""
         self.posts = []
-        self.VERSION = "1.0.0-dev27-20220320"
+        self.VERSION = "1.0.0-dev28-20220321"
 
     def check_skip(self: object, post_list: Iterable) -> bool:
         """Using the first_post_url value, check whether or not we should skip this
@@ -88,7 +88,7 @@ class GlobalVars:
                 self.first_post_url = post_url
                 return False
 
-    def clean(self: object) -> NoReturn:
+    def clean(self: object) -> None:
         """Deletes all currently stored members of self.posts.
 
         No arguments.
@@ -135,7 +135,7 @@ class GlobalVars:
             )
             return 30
 
-    def get_subs(self: object) -> NoReturn:
+    def get_subs(self: object) -> None:
         """Get, from user input, a list of subreddits to search for posts from.
 
         :return: Nothing
@@ -147,7 +147,7 @@ class GlobalVars:
         self.wanted_posts = []
         self.wanted_posts_last = []
 
-    def process_args(self: object, argv: List, Log: object) -> NoReturn:
+    def process_args(self: object, argv: List, Log: object) -> None:
         """Process any passed runtime arguments.
 
         Arguments:
@@ -181,7 +181,7 @@ class ToRPost:
         self.permalink = self.praw_obj.permalink
         self.subreddit = self.praw_obj.title.split(" |")[0].casefold()
 
-    def update_flair(self: object, new_flair: str) -> NoReturn:
+    def update_flair(self: object, new_flair: str) -> None:
         """Updates the currently stored flair of the ToRPost with a new, given one.
 
         Arguments:
@@ -191,7 +191,7 @@ class ToRPost:
         """
         self.flair = new_flair
 
-    def remove(self: object, GlobalHandler: object) -> NoReturn:
+    def remove(self: object, GlobalHandler: object) -> None:
         """Removes the post from the ToR queue. Can only be invoked by moderators of
         r/TranscribersOfReddit; will crash the program if attempted by anyone else.
 

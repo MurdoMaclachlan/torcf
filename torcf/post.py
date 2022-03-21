@@ -18,14 +18,14 @@
 """
 
 from praw.models import Submission
-from typing import Dict, Iterable, NoReturn
+from typing import Dict, Iterable
 from .globals import Globals, ToRPost
 from .logger import Log
 
 global Globals, Log
 
 
-def add_post(post: Submission) -> NoReturn:
+def add_post(post: Submission) -> None:
     """Adds a single ToR post to the list stored in the Globals class. This contains
     information about the post itself as well as the original partner post & a method
     to remove the post from ToR.
@@ -38,7 +38,7 @@ def add_post(post: Submission) -> NoReturn:
     Globals.posts.append(ToRPost(post))
 
 
-def check_post(post: ToRPost, Notify: object) -> NoReturn:
+def check_post(post: ToRPost, Notify: object) -> None:
     """Take a post and compare it to all subsequent posts in the queue. If any clones
     are found, delete the unflaired ones and request moderator action for the flaired
     ones.
@@ -105,7 +105,7 @@ def duplicate(post: ToRPost) -> Dict:
     return duplicates
 
 
-def find_wanted(post: ToRPost, Notify: object) -> NoReturn:
+def find_wanted(post: ToRPost, Notify: object) -> None:
     """Check if the post originates on a partner sub we're searching for, either adding
     it to the list of wanted posts, or updating its flair on that list.
 
@@ -128,7 +128,7 @@ def find_wanted(post: ToRPost, Notify: object) -> NoReturn:
         ].update_flair(post.flair)
 
 
-def update_post_list() -> NoReturn:
+def update_post_list() -> None:
     """Write out current data within Gloabls.WANTED_POSTS to the post_list file,
     overwriting the data that was previously in that file.
 
@@ -143,7 +143,7 @@ def update_post_list() -> NoReturn:
             )
 
 
-def check_mod_log(modlog: Iterable) -> NoReturn:
+def check_mod_log(modlog: Iterable) -> None:
     """Checks the mod log of r/TranscribersOfReddit for any post removals.
 
     :param modlog: a praw modlog object

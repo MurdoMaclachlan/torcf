@@ -24,7 +24,7 @@ import webbrowser
 from configparser import NoSectionError
 from praw.exceptions import MissingRequiredAttributeException
 from random import randint
-from typing import Dict, NoReturn
+from typing import Dict
 from .creds import add_refresh_token, create_credentials, get_credentials
 from .globals import Globals
 from .logger import Log
@@ -32,7 +32,7 @@ from .logger import Log
 global Globals, Log
 
 
-def check_failure(client: object, params: Dict, state: str) -> NoReturn:
+def check_failure(client: object, params: Dict, state: str) -> None:
     """Checks for an authorisation failure, either due to a state mismatch or Reddit
     throwing an error in the return parameters.
 
@@ -44,12 +44,9 @@ def check_failure(client: object, params: Dict, state: str) -> NoReturn:
     No return value.
     """
     if state != params["state"]:
-        send_message(
-            client, f'State mismatch. Expected: {state} Received: {params["state"]}'
-        )
-        Log.new(
-            f'State mismatch. Expected: {state} Received: {params["state"]}', "FATAL"
-        )
+        message = f"State mismatch. Expected: {state} - Received: {params['state']}"
+        send_message(client, message)
+        Log.new(message, "FATAL")
         sys.exit()
     elif "error" in params:
         send_message(client, params["error"])
@@ -156,7 +153,7 @@ def receive_connection() -> object:
     return client
 
 
-def send_message(client: object, message: str) -> NoReturn:
+def send_message(client: object, message: str) -> None:
     """Sends a message to the client and closes the connection.
 
     Arguments:
