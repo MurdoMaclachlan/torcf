@@ -66,7 +66,7 @@ class GlobalVars:
         # Attributes declared here should have constant initial values
         self.first_post_url = ""
         self.posts = []
-        self.VERSION = "1.0.0-dev28-20220321"
+        self.VERSION = "1.0.0-dev29-20220323"
 
     def check_skip(self: object, post_list: Iterable) -> bool:
         """Using the first_post_url value, check whether or not we should skip this
@@ -153,7 +153,7 @@ class GlobalVars:
         Arguments:
             - argv: the list of runtime arguments
 
-        No return value.
+        :return: Nothing
         """
         self.CHECK_FOR_SUB = ("--check" in argv or "-c" in argv)
         self.MODLOG = ("--modlog" in argv or "-m" in argv)
@@ -164,6 +164,27 @@ class GlobalVars:
             if not ("--wait" in argv or "-w" in argv) else
             self.determine_wait(argv, Log)
         )
+
+    def wanted_posts_changed(self: object) -> bool:
+        """Check if there has been any change to the tracked posts from monitored
+        subreddits.
+
+        :return: True if there has been a change; else False.
+        """
+        if Globals.wanted_posts_last != Globals.wanted_posts:
+            change = True
+        else:
+            change = False
+            for i in range(len(Globals.wanted_posts)):
+                if Globals.wanted_posts[i].flair != Globals.wanted_posts_last[i].flair:
+                    change = True
+                    break
+        if change:
+            Globals.wanted_posts_last = Globals.wanted_posts
+        return change
+
+
+
 
 class ToRPost:
     """Represents an instance of a post on the r/TranscribersOfReddit subreddit, with

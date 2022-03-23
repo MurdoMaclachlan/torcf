@@ -83,9 +83,8 @@ def clone_finder() -> None:
                                 limit=650
                             )
                         )
-                    if Globals.wanted_posts != Globals.wanted_posts_last:
+                    if Globals.wanted_posts_changed():
                         update_post_list()
-                        Globals.wanted_posts_last = Globals.wanted_posts
                 Log.new(
                     f"Finished checking all posts, waiting {Globals.WAIT} seconds.",
                     "INFO"
