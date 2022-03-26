@@ -137,22 +137,27 @@ def update_post_list() -> None:
     with open("data/post_list.txt", "w+") as post_file:
         for i in Globals.wanted_posts:
             post_file.write(
-                f"{i.subreddit} |"
-                + f" {i.flair} |"
-                + f" https://reddit.com{i.permalink}\n"
+                f"{i.subreddit} | "
+                + f"{i.flair} | "
+                + f"https://reddit.com{i.permalink}\n"
             )
 
 
-def check_mod_log(modlog: Iterable) -> None:
+def check_mod_log(modlog: Iterable, bar: object) -> None:
     """Checks the mod log of r/TranscribersOfReddit for any post removals.
 
     :param modlog: a praw modlog object
+    :param bar:    a smooth_progress.ProgressBar object
 
     :return: Nothing
     """
+    Log.new("Checking modlog...", "INFO")
+    bar.open()
     for log in modlog:
         if log.action == "removelink":
             Globals.removed_posts.append(log.target_permalink)
+        bar.increment()
+    bar.close()
 
     for post in Globals.wanted_posts:
         if (

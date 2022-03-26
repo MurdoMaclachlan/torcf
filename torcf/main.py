@@ -54,9 +54,9 @@ def clone_finder() -> None:
 
         # Fetch posts and set shit up
         Log.new("Fetching posts...", "INFO")
-        post_list = reddit.subreddit("transcribersofreddit").new(limit=651)
+        post_list = reddit.subreddit("transcribersofreddit").new(limit=751)
 
-        with ProgressBar(limit=650) as bar:
+        with ProgressBar(limit=750) as bar:
             if not Globals.check_skip(post_list):
                 Log.new("Posts fetched; generating list...", "INFO")
                 # Iterate over posts and initialise each one as a ToRPost for easier
@@ -80,8 +80,9 @@ def clone_finder() -> None:
                     if Globals.MODLOG:
                         check_mod_log(
                             reddit.subreddit('transcribersofreddit').mod.log(
-                                limit=650
-                            )
+                                limit=750
+                            ),
+                            bar
                         )
                     if Globals.wanted_posts_changed():
                         update_post_list()

@@ -12,7 +12,7 @@ As of this version, PRAW 7.5+ and smooth_progress 0.1+ are required. PyGObject 3
     - --verbose, -v: provides extra logging and desktop notifications.
     - --wait, -w: how long in seconds the program should wait in between checks; defaults to 30; format: `--wait X`
 - Added ability to auto-remove clones; disabled by default, requires moderator privileges. (@MurdoMaclachlan)
-- Increased post limit for Reddit instance from 500 to 651 to account for increasing queue sizes. (@MurdoMaclachlan)
+- Increased post limit for Reddit instance from 500 to 751 to account for increasing queue sizes. (@MurdoMaclachlan)
 - Changed priority from unflaired to flaired clones, which should now be the only type of clone to appear. (@MurdoMaclachlan)
 - Allowed gracefully handling kill signals such as CTRL+C instead of instantly dying. (@MurdoMaclachlan)
 - Prevented attempting to update or create a log file if the log is empty. (@MurdoMaclachlan)
