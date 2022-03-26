@@ -66,7 +66,7 @@ class GlobalVars:
         # Attributes declared here should have constant initial values
         self.first_post_url = ""
         self.posts = []
-        self.VERSION = "1.0.0-dev29-20220323"
+        self.VERSION = "1.0.0-dev30-20220326"
 
     def check_skip(self: object, post_list: Iterable) -> bool:
         """Using the first_post_url value, check whether or not we should skip this
@@ -145,7 +145,7 @@ class GlobalVars:
         ).casefold().split(" ")
         self.removed_posts = []
         self.wanted_posts = []
-        self.wanted_posts_last = []
+        self.wanted_posts_last = [ToRPost(None, dummy=True)]
 
     def process_args(self: object, argv: List, Log: object) -> None:
         """Process any passed runtime arguments.
@@ -171,19 +171,14 @@ class GlobalVars:
 
         :return: True if there has been a change; else False.
         """
-        if Globals.wanted_posts_last != Globals.wanted_posts:
-            change = True
-        else:
-            change = False
+        change = False
+        if len(Globals.wanted_posts) > 0:
             for i in range(len(Globals.wanted_posts)):
                 if Globals.wanted_posts[i].flair != Globals.wanted_posts_last[i].flair:
                     change = True
+                    Globals.wanted_posts_last = Globals.wanted_posts
                     break
-        if change:
-            Globals.wanted_posts_last = Globals.wanted_posts
         return change
-
-
 
 
 class ToRPost:
@@ -194,13 +189,17 @@ class ToRPost:
     def __eq__(self: object, other: object):
         return self.orig_link == other.orig_link
 
-    def __init__(self: object, praw_obj: object):
-        self.praw_obj = praw_obj
-        self.created = self.praw_obj.created_utc
-        self.flair = self.praw_obj.link_flair_text
-        self.orig_link = self.praw_obj.url
-        self.permalink = self.praw_obj.permalink
-        self.subreddit = self.praw_obj.title.split(" |")[0].casefold()
+    def __init__(self: object, praw_obj: object, dummy: bool = False):
+        if dummy:
+            self.praw_obj = None
+            self.flair = ""
+        else:
+            self.praw_obj = praw_obj
+            self.created = self.praw_obj.created_utc
+            self.flair = self.praw_obj.link_flair_text
+            self.orig_link = self.praw_obj.url
+            self.permalink = self.praw_obj.permalink
+            self.subreddit = self.praw_obj.title.split(" |")[0].casefold()
 
     def update_flair(self: object, new_flair: str) -> None:
         """Updates the currently stored flair of the ToRPost with a new, given one.
