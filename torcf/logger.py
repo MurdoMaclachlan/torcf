@@ -109,7 +109,7 @@ class Logger:
         """
         if method in ["time", "date"]:
             return datetime.fromtimestamp(time()).strftime(
-                ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d")[method == "time"]
+                ("%Y-%m-%d", "%Y-%m-%d %H:%M:%S")[method == "time"]
             )
         else:
             print("ERROR: Bad method passed to Logger.get_time().")
