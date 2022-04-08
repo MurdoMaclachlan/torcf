@@ -108,15 +108,12 @@ def signal_handler(sig: int, frame: Any) -> None:
 
     :return: Nothing.
     """
-    ret = True
     try:
         global bar
-        if bar.close():
-            ret = False
+        if not bar.close():
+            print("\r", end="\r")
     except NameError:
         pass
-    if ret:
-        print("\r", end="\r")
     Log.new("Received kill signal, exiting...", "INFO")
     Log.output()
     sysexit(0)

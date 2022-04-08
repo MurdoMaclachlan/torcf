@@ -34,7 +34,7 @@ class Logger:
 
     Attributes:
     - log (hidden, list): contains all log entries, each one an instance of LogEntry
-    - scopes (hidde, dictionary): contains all scopes and their associated values
+    - scopes (hidden, dictionary): contains all scopes and their associated values
 
     Methods:
     - get(): get entries from the log
@@ -60,8 +60,7 @@ class Logger:
         self.__is_empty = True
 
     def get(
-            self: object,
-            mode: str = "all", scope: str = None
+            self: object, mode: str = "all", scope: str = None
         ) -> Union[List[str], str, None]:
         """Returns item(s) in the log. What entries are returned can be controlled by
         passing optional arguments.
@@ -75,7 +74,7 @@ class Logger:
                  an empty string on a failure.log_len = 0
         """
         if self.__is_empty:
-            return ""
+            pass
         elif scope is None:
             # Tuple indexing provides a succint way to determine what to return
             return (self.__log, self.__log[len(self.__log)-1])[mode == "recent"]
@@ -86,19 +85,18 @@ class Logger:
                 for i in self.__log:
                     if i.scope == scope:
                         data.append(i)
-                # Allows us to return an empty string to indicate failure if no entries
-                # were found
-                return data if len(data) > 0 else ""
+                if data:
+                    return data
             # Return the most recent log entry with a matching scope; for this purpose,
             # we reverse the list then iterate through it.
             elif mode == "recent":
                 for i in self.__log.reverse():
                     if i.scope == scope:
                         return self.__log[i]
-                return ""
             else:
                 self.new("Unknown mode passed to Logger.get().", "WARNING")
-                return ""
+        # Return an empty string to indicate failure if no entries were found
+        return ""
 
     def get_time(self: object, method: str = "time") -> str:
         """Gets the current time and parses it to a human-readable format.
@@ -109,12 +107,13 @@ class Logger:
         Returns: a single date string in either format 'YYYY-MM-DD HH:MM:SS', or format
                  'YYYY-MM-DD'
         """
-        if method == "time":
-            return datetime.fromtimestamp(time()).strftime("%Y-%m-%d %H:%M:%S")
-        elif method == "date":
-            return datetime.fromtimestamp(time()).strftime("%Y-%m-%d")
+        if method in ["time", "date"]:
+            return datetime.fromtimestamp(time()).strftime(
+                ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d")[method == "time"]
+            )
         else:
             print("ERROR: Bad method passed to Logger.get_time().")
+            return ""
 
     def output(self: object) -> None:
         """Write all log entries with scopes set to save to a log file in a data folder
@@ -154,24 +153,16 @@ class Logger:
         if scope in self.__scopes or scope == "NOSCOPE":
             # Create and save the log entry
             output = (self.__scopes[scope] == 2) if scope != "NOSCOPE" else False
-            entry = LogEntry(
-                message,
-                output,
-                scope,
-                self.get_time()
-            )
+            entry = LogEntry(message, output, scope, self.get_time())
             self.__log.append(entry)
-            self.__is_empty = not output
+            if not self.__is_empty:
+                self.__is_empty = output
             # A select few messages have no listed scope and should always be printed
             if scope == "NOSCOPE":
                 print(entry.rendered)
             # If the scope's value is 1 or greater it should be printed
             elif self.__scopes[scope]:
-                print(
-                    entry.rendered
-                    if not do_not_print
-                    else None
-                )
+                print(entry.rendered if not do_not_print else None)
             return True
         else:
             self.new("Unknown scope passed to Logger.new()", "WARNING")

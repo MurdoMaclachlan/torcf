@@ -158,7 +158,6 @@ def check_mod_log(modlog: Iterable, bar: object) -> None:
             Globals.removed_posts.append(log.target_permalink)
         bar.increment()
     bar.close()
-
     for post in Globals.wanted_posts:
         if (
             post.flair != "Completed!"
