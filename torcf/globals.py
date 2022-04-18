@@ -66,7 +66,7 @@ class GlobalVars:
         # Attributes declared here should have constant initial values
         self.first_post_url = ""
         self.posts = []
-        self.VERSION = "1.0.0-dev33-20220408"
+        self.VERSION = "1.0.0-dev34-20220418"
 
     def check_skip(self: object, post_list: Iterable) -> bool:
         """Using the first_post_url value, check whether or not we should skip this
@@ -190,14 +190,13 @@ class ToRPost:
         return self.orig_link == other.orig_link
 
     def __init__(self: object, praw_obj: object, dummy: bool = False):
-        if dummy:
-            self.praw_obj = None
-            self.created = None
-            self.flair = ""
-            self.orig_link = None
-            self.permalink = None
-            self.subreddit = None
-        else:
+        self.praw_obj = None
+        self.created = None
+        self.flair = ""
+        self.orig_link = None
+        self.permalink = None
+        self.subreddit = None
+        if not dummy:
             self.praw_obj = praw_obj
             self.created = self.praw_obj.created_utc
             self.flair = self.praw_obj.link_flair_text
