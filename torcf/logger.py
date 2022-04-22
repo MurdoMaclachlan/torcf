@@ -17,6 +17,10 @@
     Contact me at murdomaclachlan@duck.com
 """
 
+from gi import require_version
+require_version("Notify", "0.7")
+from gi.repository import Notify
+from gi.repository.GLib import GError
 from datetime import datetime
 from time import time
 from typing import List, Union
@@ -45,6 +49,8 @@ class Logger:
     ) -> None:
         self.__log = []
         self.__is_empty = True
+        self.__notify = Notify
+        self.__notify.init("Clone Finder")
         self.__scopes = {
             "CLONE":   clone,   # a notification of a found clone
             "DEBUG":   debug,   # information for debugging the program
@@ -114,6 +120,23 @@ class Logger:
         else:
             print("ERROR: Bad method passed to Logger.get_time().")
             return ""
+
+    def notify(self: object, message: str) -> None:
+        """Display a desktop notification with a given message.
+
+        This method implements a try-except to catch a GError I've been experiencing
+        recently and can't find the cause of. Something in GLib seems to crash whenever
+        I display a notification with a Python notification library, despite the fact
+        that the notification goes through successfully anyway. Since it has no bearing
+        on the program function, this code ignores the error.
+
+        :param message: The message to display in the notification.
+        """
+        try:
+            self.__notify.Notification.new(message).show()
+        except GError:
+            pass
+
 
     def output(self: object) -> None:
         """Write all log entries with scopes set to save to a log file in a data folder

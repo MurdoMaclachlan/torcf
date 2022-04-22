@@ -17,9 +17,6 @@
     Contact me at murdomaclachlan@duck.com
 """
 import signal
-from gi import require_version
-require_version('Notify', '0.7')
-from gi.repository import Notify
 from smooth_progress import ProgressBar
 from sys import argv
 from sys import exit as sysexit
@@ -42,7 +39,6 @@ def clone_finder() -> None:
     """
     global bar
 
-    Notify.init("Clone Finder")
     Log.new(f"Running Clone Finder version {Globals.VERSION}", "NOSCOPE")
     Globals.process_args(argv, Log)
     reddit = init()
@@ -69,9 +65,9 @@ def clone_finder() -> None:
                 Log.new("Checking for clones...", "INFO")
                 bar.open()
                 for post in Globals.posts:
-                    check_post(post, Notify)
+                    check_post(post)
                     if Globals.CHECK_FOR_SUB:
-                        find_wanted(post, Notify)
+                        find_wanted(post)
                     bar.increment()
                 bar.close()
 
@@ -93,7 +89,7 @@ def clone_finder() -> None:
             else:
                 Log.new("No new posts since last check, skipping cycle.", "INFO")
                 if Globals.VERBOSE:
-                    Notify.Notification.new("Skipping cycle.").show()
+                    Log.notify("Skipping cycle.")
                 Log.new(f"Waiting {Globals.WAIT} seconds.", "INFO")
         Log.output()
         Globals.clean()

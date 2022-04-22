@@ -38,20 +38,19 @@ def add_post(post: Submission) -> None:
     Globals.posts.append(ToRPost(post))
 
 
-def check_post(post: ToRPost, Notify: object) -> None:
+def check_post(post: ToRPost) -> None:
     """Take a post and compare it to all subsequent posts in the queue. If any clones
     are found, delete the unflaired ones and request moderator action for the flaired
     ones.
 
     Arguments:
     - post (ToRPost): the post to check.
-    - Notify (gi.repository.Notify): the notification manager.
 
     No return value.
     """
     duplicates = duplicate(post)
     if len(duplicates["flaired"]) > 0 or len(duplicates["unflaired"]) > 0:
-        Notify.Notification.new("Found cloned post.").show()
+        Log.notify("Found cloned post.")
         for i in duplicates["unflaired"]:
             Log.new(
                 (
@@ -105,19 +104,18 @@ def duplicate(post: ToRPost) -> Dict:
     return duplicates
 
 
-def find_wanted(post: ToRPost, Notify: object) -> None:
+def find_wanted(post: ToRPost) -> None:
     """Check if the post originates on a partner sub we're searching for, either adding
     it to the list of wanted posts, or updating its flair on that list.
 
     :param post: (ToRPost): the post to check.
-    :param Notify: (gi.Notify object): the desktop notification manager.
 
     :return: Nothing
     """
     match_sub = (post.subreddit in Globals.SUBREDDITS)
     # If this post has yet to be found, add it to the list
     if match_sub and post not in Globals.wanted_posts:
-        Notify.Notification.new(f"Found {post.subreddit} post.").show()
+        Log.notify(f"Found {post.subreddit} post.")
         Globals.wanted_posts.append(post)
     # If this post has been found, ensure its flair is up to date
     # by updating the already logged post's flair with the new
