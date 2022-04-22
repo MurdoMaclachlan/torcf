@@ -137,27 +137,6 @@ class Logger:
         except GError:
             pass
 
-
-    def output(self: object) -> None:
-        """Write all log entries with scopes set to save to a log file in a data folder
-        in the working directory, creating the folder and file if they do not exist.
-        The log files are marked with the date, so each new day, a new file will be
-        created.
-
-        No arguments.
-
-        No return value.
-        """
-        if not self.__is_empty:
-            with open(
-                    f"data/log-{self.get_time(method='date')}.txt",
-                    "at+"
-            ) as log_file:
-                for line in self.__log:
-                    if line.output:
-                        log_file.write(line.rendered + "\n")
-            self.clean()
-
     def new(
             self: object,
             message: str, scope: str, do_not_print: bool = False
@@ -190,6 +169,26 @@ class Logger:
         else:
             self.new("Unknown scope passed to Logger.new()", "WARNING")
         return False
+
+    def output(self: object) -> None:
+        """Write all log entries with scopes set to save to a log file in a data folder
+        in the working directory, creating the folder and file if they do not exist.
+        The log files are marked with the date, so each new day, a new file will be
+        created.
+
+        No arguments.
+
+        No return value.
+        """
+        if not self.__is_empty:
+            with open(
+                    f"data/log-{self.get_time(method='date')}.txt",
+                    "at+"
+            ) as log_file:
+                for line in self.__log:
+                    if line.output:
+                        log_file.write(line.rendered + "\n")
+            self.clean()
 
 
 class LogEntry:
