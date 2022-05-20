@@ -56,6 +56,7 @@ class GlobalVars:
         # run-time, depending on what arguments are passed
         self.CHECK_FOR_SUB = None
         self.MODLOG = None
+        self.MODQUEUE = None
         self.REMOVE = None
         self.SUBREDDITS = None
         self.VERBOSE = None
@@ -156,7 +157,8 @@ class GlobalVars:
         :return: Nothing
         """
         self.CHECK_FOR_SUB = ("--check" in argv or "-c" in argv)
-        self.MODLOG = ("--modlog" in argv or "-m" in argv)
+        self.MODLOG = ("--modlog" in argv or "-l" in argv)
+        self.MODQUEUE = ("--modqueue" in argv or "-q" in argv)
         self.REMOVE = ("--remove" in argv or "-r" in argv)
         self.VERBOSE = ("--verbose" in argv or "-v" in argv)
         self.WAIT = (

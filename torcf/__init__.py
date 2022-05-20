@@ -25,6 +25,7 @@ from .main import clone_finder
 from .post import add_post
 from .post import check_post
 from .post import check_mod_log
+from .post import check_mod_queue
 from .post import duplicate
 from .post import find_wanted
 from .post import update_post_list

@@ -98,7 +98,7 @@ def login() -> object:
     if "refresh_token" not in creds.keys():
         reddit = praw.Reddit(redirect_uri=creds["redirect_uri"], **constants)
         state = str(randint(0, 65000))
-        scopes = ["edit", "history", "modlog", "read"]
+        scopes = ["edit", "history", "modlog", "modposts", "read"]
         url = reddit.auth.url(scopes, state, "permanent")
         Log.new(
             "TCF has not yet been authorised with your account. The program"

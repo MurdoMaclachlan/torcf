@@ -6,9 +6,11 @@ As of this version, PRAW 7.5+ and smooth_progress 0.1+ are required. PyGObject 3
 - Added logger class for handling logging and desktop notifications. (@MurdoMaclachlan)
 - Added and enforced refresh tokens for Reddit authentication. (@MurdoMaclachlan)
 - Added the ability to search for posts from a certain sub within the queue, keeping track of their flair and link in a .txt file and sending a desktop notification when a new post from that sub is found in the queue. (@MurdoMaclachlan)
+- Added the ability to check modqueue and automatically remove ToR posts for which the partner post has been removed. (@MurdoMaclachlan)
 - Added various runtime arguments (@MurdoMaclachlan):
     - --check, -c: determines whether to search for posts from a certain sub; prompts what subs to search for.
-    - --modlog, -m: determines whether to check modlog; requires moderator privileges. Will allow tracking of removed posts.
+    - --modlog, -l: determines whether to check modlog; requires moderator privileges. Allows tracking of when wanted posts are removed.
+    - --modqueue -q: determines whether to check modqueue; requires moderator privileges. Allows posts removed on the partner sub to be automatically removed if reported.
     - --remove, -r: determines whether clones should be automatically removed; requires moderator privileges.
     - --verbose, -v: provides extra logging and desktop notifications.
     - --wait, -w: how long in seconds the program should wait in between checks; defaults to 30; format: `--wait X`

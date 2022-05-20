@@ -25,7 +25,8 @@ from typing import Any
 from .auth import init
 from .globals import Globals
 from .logger import Log
-from .post import add_post, check_mod_log, check_post, find_wanted, update_post_list
+from .post import add_post, check_mod_log, check_mod_queue, check_post, find_wanted,\
+                  update_post_list
 
 global bar, Globals, Log
 
@@ -78,6 +79,14 @@ def clone_finder() -> None:
                             reddit.subreddit('transcribersofreddit').mod.log(
                                 limit=750
                             ),
+                            bar
+                        )
+                    if Globals.MODQUEUE:
+                        check_mod_queue(
+                            reddit.subreddit('transcribersofreddit').mod.modqueue(
+                                limit=25
+                            ),
+                            reddit,
                             bar
                         )
                     if Globals.wanted_posts_changed():

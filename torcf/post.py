@@ -164,3 +164,26 @@ def check_mod_log(modlog: Iterable, bar: object) -> None:
             Globals.wanted_posts[
                 Globals.wanted_posts.index(post)
             ].update_flair("Removed")
+
+
+def check_mod_queue(modqueue: Iterable, reddit: object, bar: object) -> None:
+    """Checks the mod queue of r/TranscribersOfReddit for any posts reported as removed,
+    checks if they are removed, and removes them if so.
+
+    :param modqueue: a praw modqueue object
+    :param reddit:   a praw Reddit object
+    :param bar:      a smooth_progress.ProgressBar object
+
+    :return: Nothing
+    """
+    Log.new("Checking moqueue...", "INFO")
+    bar.open()
+    for item in modqueue:
+        try:
+            if reddit.submission(url=item.url).removed_by_category:
+                Log.new("Found removed item in modqueue; removing.", "INFO")
+                item.mod.remove()
+        except AttributeError:
+            pass
+        bar.increment()
+    bar.close()
