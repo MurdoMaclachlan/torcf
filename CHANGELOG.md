@@ -1,9 +1,10 @@
 ## Unreleased
 
-As of this version, PRAW 7.5+ and smooth_progress 0.1+ are required. PyGObject 3.42+ is now explicitly required, having been an implicit requirement before.
+As of this version, PRAW 7.5+ and smooth_progress 0.1+ are required. PyGObject 3.42+, previously an implicit requirement not explicitly stated, has been replaced with an explicitly-stated requirement of plyer.
 
 - Restructured program, delegating many functions from main to other modules. (@MurdoMaclachlan)
 - Added logger class for handling logging and desktop notifications. (@MurdoMaclachlan)
+- Notifications now show the name of the program as a title. (@MurdoMaclachlan)
 - Added and enforced refresh tokens for Reddit authentication. (@MurdoMaclachlan)
 - Added the ability to search for posts from a certain sub within the queue, keeping track of their flair and link in a .txt file and sending a desktop notification when a new post from that sub is found in the queue. (@MurdoMaclachlan)
 - Added the ability to check modqueue and automatically remove ToR posts for which the partner post has been removed. (@MurdoMaclachlan)
