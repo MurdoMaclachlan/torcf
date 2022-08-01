@@ -44,15 +44,15 @@ class Logger:
         self: object,
         clone=2, debug=0, error=2, fatal=2, info=1, warning=2
     ) -> None:
-        self.__log = []
         self.__is_empty = True
+        self.__log = []
         self.__notifier = notification
         self.__scopes = {
-            "CLONE":   clone,   # a notification of a found clone
-            "DEBUG":   debug,   # information for debugging the program
-            "ERROR":   error,   # errors the program can recover from
-            "FATAL":   fatal,   # errors that mean the program cannot continue
-            "INFO":    info,    # general information for the user
+            "CLONE": clone,  # a notification of a found clone
+            "DEBUG": debug,  # information for debugging the program
+            "ERROR": error,  # errors the program can recover from
+            "FATAL": fatal,  # errors that mean the program cannot continue
+            "INFO": info,  # general information for the user
             "WARNING": warning  # things that could cause errors later on
         }
         self.__write_logs = False
@@ -60,26 +60,23 @@ class Logger:
     def clean(self: object) -> None:
         del self.__log[:]
         self.__is_empty = True
+        self.__write_logs = False
 
     def get(
-            self: object, mode: str = "all", scope: str = None
-        ) -> Union[List[str], str, None]:
+        self: object, mode: str = "all", scope: str = None
+    ) -> Union[List[str], str]:
         """Returns item(s) in the log. What entries are returned can be controlled by
         passing optional arguments.
 
-        Arguments:
-            - mode (optional, string): options are "all" and "recent".
-            - scope (optional, string): if passed, only entries with matching scope will
-            be returned
-
-        Returns: a single log entry (string), list of log entries (string array), or
-                 an empty string on a failure.log_len = 0
+        :param mode: Optional; 'all' or 'recent'
+        :param scope: Optional; if passed, oly entries with matching scope will be returned.
+        :return: a single log entry, list of log entries, or an empty string on a failure.
         """
         if self.__is_empty:
             pass
-        elif scope is None:
+        if scope is None:
             # Tuple indexing provides a succint way to determine what to return
-            return (self.__log, self.__log[len(self.__log)-1])[mode == "recent"]
+            return (self.__log, self.__log[len(self.__log) - 1])[mode == "recent"]
         else:
             # Return all log entries with a matching scope
             if mode == "all":
@@ -87,8 +84,9 @@ class Logger:
                 for i in self.__log:
                     if i.scope == scope:
                         data.append(i)
-                if data:
-                    return data
+                # Allows us to return an empty string to indicate failure if no entries
+                # were found
+                return data if len(data) > 0 else ""
             # Return the most recent log entry with a matching scope; for this purpose,
             # we reverse the list then iterate through it.
             elif mode == "recent":
@@ -103,10 +101,8 @@ class Logger:
     def get_time(self: object, method: str = "time") -> str:
         """Gets the current time and parses it to a human-readable format.
 
-        Arguments:
-        - method (str): the method to calculate the timestamp; either 'time' or 'date'.
-
-        Returns: a single date string in either format 'YYYY-MM-DD HH:MM:SS', or format
+        :param method: The method to calculate the timestamp; either 'time' or 'date'.
+        :return: a single date string in either format 'YYYY-MM-DD HH:MM:SS', or format
                  'YYYY-MM-DD'
         """
         if method in ["time", "date"]:
@@ -128,36 +124,32 @@ class Logger:
 
         :param message: The message to display in the notification.
         """
-        self.__notifier.notify(title="ToRCF",message=message)
+        self.__notifier.notify(title="ToRCF", message=message)
 
-    def new(
-            self: object,
-            message: str, scope: str, do_not_print: bool = False
-        ) -> bool:
+    def new(self: object, message: str, scope: str, do_not_print: bool = False) -> bool:
         """Initiates a new log entry and prints it to the console. Optionally, if
         do_not_print is passed as True, it will only save the log and will not print
         anything (unless the scope is 'NOSCOPE'; these messages are always printed).
 
-        Arguments:
-        - messages (single string): the messaage to log.
-        - scope (single string): the scope of the message (e.g. debug, error, info).
-        - do_not_print (bool): optional, False by default.
-
-        Returns: boolean success status.
+        :param message:       The messaage to log.
+        :param scope:         The scope of the message (e.g. debug, error, info).
+        :param do_not_print:  Optional; False by default.
+        :return: boolean success status.
         """
         if scope in self.__scopes or scope == "NOSCOPE":
             # Create and save the log entry
             output = (self.__scopes[scope] == 2) if scope != "NOSCOPE" else False
             entry = LogEntry(message, output, scope, self.get_time())
             self.__log.append(entry)
-            if not self.__is_empty:
-                self.__is_empty = output
+            if not self.__write_logs:
+                self.__write_logs = output
             # A select few messages have no listed scope and should always be printed
             if scope == "NOSCOPE":
                 print(entry.rendered)
             # If the scope's value is 1 or greater it should be printed
             elif self.__scopes[scope]:
                 print(entry.rendered if not do_not_print else None)
+            self.__is_empty = False
             return True
         else:
             self.new("Unknown scope passed to Logger.new()", "WARNING")
@@ -168,20 +160,15 @@ class Logger:
         in the working directory, creating the folder and file if they do not exist.
         The log files are marked with the date, so each new day, a new file will be
         created.
-
-        No arguments.
-
-        No return value.
         """
-        if not self.__is_empty:
+        if self.__write_logs:
             with open(
-                    f"data/log-{self.get_time(method='date')}.txt",
-                    "at+"
+                f"data/log-{self.get_time(method='date')}.txt", "at+"
             ) as log_file:
                 for line in self.__log:
                     if line.output:
                         log_file.write(line.rendered + "\n")
-            self.clean()
+        self.clean()
 
 
 class LogEntry:
