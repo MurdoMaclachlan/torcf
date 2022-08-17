@@ -17,183 +17,37 @@
     Contact me at murdomaclachlan@duck.com
 """
 
-from datetime import datetime
-from plyer import notification
-from time import time
-from typing import List, Union
+from os import environ, makedirs
+from os.path import expanduser, isdir
+from sys import platform
+import smooth_logger
 
+def get_config_path() -> str:
+    """Detects OS and defines the appropriate save path for config and logs. Exits on
+    detecting an unspported OS. Supported OSes are: Linux, MacOS, Windows.
 
-class Logger:
-    """Class for controlling the entirety of logging. The logging works on a scope-based
-    system where (almost) every message has a defined scope, and the scopes are each
-    associated with a specific value between 0 and 2 inclusive. The meanings of the
-    values are as follows:
-
-    0: disabled, do not print to console or save to log file
-    1: enabled, print to console but do not save to log file
-    2: maximum, print to console and save to log file
-
-    Attributes:
-    - log (hidden, list): contains all log entries, each one an instance of LogEntry
-    - scopes (hidden, dictionary): contains all scopes and their associated values
-
-    Methods:
-    - get(): get entries from the log
+    :return: A string dictionary containing the newly defined save paths.
     """
-    def __init__(
-        self: object,
-        clone=2, debug=0, error=2, fatal=2, info=1, warning=2
-    ) -> None:
-        self.__is_empty = True
-        self.__log = []
-        self.__notifier = notification
-        self.__scopes = {
-            "CLONE": clone,  # a notification of a found clone
-            "DEBUG": debug,  # information for debugging the program
-            "ERROR": error,  # errors the program can recover from
-            "FATAL": fatal,  # errors that mean the program cannot continue
-            "INFO": info,  # general information for the user
-            "WARNING": warning  # things that could cause errors later on
-        }
-        self.__write_logs = False
+    home = expanduser("~")
+    os = "".join(list(platform)[:3])
 
-    def clean(self: object) -> None:
-        del self.__log[:]
-        self.__is_empty = True
-        self.__write_logs = False
+    # Route for a supported operating system
+    if os in ["dar", "lin", "win"]:
 
-    def get(
-        self: object, mode: str = "all", scope: str = None
-    ) -> Union[List[str], str]:
-        """Returns item(s) in the log. What entries are returned can be controlled by
-        passing optional arguments.
-
-        :param mode: Optional; 'all' or 'recent'
-        :param scope: Optional; if passed, oly entries with matching scope will be returned.
-        :return: a single log entry, list of log entries, or an empty string on a failure.
-        """
-        if self.__is_empty:
-            pass
-        if scope is None:
-            # Tuple indexing provides a succint way to determine what to return
-            return (self.__log, self.__log[len(self.__log) - 1])[mode == "recent"]
-        else:
-            # Return all log entries with a matching scope
-            if mode == "all":
-                data = []
-                for i in self.__log:
-                    if i.scope == scope:
-                        data.append(i)
-                # Allows us to return an empty string to indicate failure if no entries
-                # were found
-                return data if len(data) > 0 else ""
-            # Return the most recent log entry with a matching scope; for this purpose,
-            # we reverse the list then iterate through it.
-            elif mode == "recent":
-                for i in self.__log.reverse():
-                    if i.scope == scope:
-                        return self.__log[i]
-            else:
-                self.new("Unknown mode passed to Logger.get().", "WARNING")
-        # Return an empty string to indicate failure if no entries were found
-        return ""
-
-    def get_time(self: object, method: str = "time") -> str:
-        """Gets the current time and parses it to a human-readable format.
-
-        :param method: The method to calculate the timestamp; either 'time' or 'date'.
-        :return: a single date string in either format 'YYYY-MM-DD HH:MM:SS', or format
-                 'YYYY-MM-DD'
-        """
-        if method in ["time", "date"]:
-            return datetime.fromtimestamp(time()).strftime(
-                ("%Y-%m-%d", "%Y-%m-%d %H:%M:%S")[method == "time"]
-            )
-        else:
-            print("ERROR: Bad method passed to Logger.get_time().")
-            return ""
-
-    def notify(self: object, message: str) -> None:
-        """Display a desktop notification with a given message.
-
-        This method implements a try-except to catch a GError I've been experiencing
-        recently and can't find the cause of. Something in GLib seems to crash whenever
-        I display a notification with a Python notification library, despite the fact
-        that the notification goes through successfully anyway. Since it has no bearing
-        on the program function, this code ignores the error.
-
-        :param message: The message to display in the notification.
-        """
-        self.__notifier.notify(title="ToRCF", message=message)
-
-    def new(self: object, message: str, scope: str, do_not_print: bool = False) -> bool:
-        """Initiates a new log entry and prints it to the console. Optionally, if
-        do_not_print is passed as True, it will only save the log and will not print
-        anything (unless the scope is 'NOSCOPE'; these messages are always printed).
-
-        :param message:       The messaage to log.
-        :param scope:         The scope of the message (e.g. debug, error, info).
-        :param do_not_print:  Optional; False by default.
-        :return: boolean success status.
-        """
-        if scope in self.__scopes or scope == "NOSCOPE":
-            # Create and save the log entry
-            output = (self.__scopes[scope] == 2) if scope != "NOSCOPE" else False
-            entry = LogEntry(message, output, scope, self.get_time())
-            self.__log.append(entry)
-            if not self.__write_logs:
-                self.__write_logs = output
-            # A select few messages have no listed scope and should always be printed
-            if scope == "NOSCOPE":
-                print(entry.rendered)
-            # If the scope's value is 1 or greater it should be printed
-            elif self.__scopes[scope]:
-                print(entry.rendered if not do_not_print else None)
-            self.__is_empty = False
-            return True
-        else:
-            self.new("Unknown scope passed to Logger.new()", "WARNING")
-        return False
-
-    def output(self: object) -> None:
-        """Write all log entries with scopes set to save to a log file in a data folder
-        in the working directory, creating the folder and file if they do not exist.
-        The log files are marked with the date, so each new day, a new file will be
-        created.
-        """
-        if self.__write_logs:
-            with open(
-                f"data/log-{self.get_time(method='date')}.txt", "at+"
-            ) as log_file:
-                for line in self.__log:
-                    if line.output:
-                        log_file.write(line.rendered + "\n")
-        self.clean()
-
-
-class LogEntry:
-    """Represents a single entry within the log, storing its timestamp, scope and
-    message. This makes it easier to select certain log entries using the
-    Logger.get() method.
-
-    Attributes:
-        - message (str): the information conveyed by the entry
-        - scope (str): the scope of the entry
-        - timestamp (str): the formatted time at which the entry was created
-        - rendered (str): the full rendered message that will be printed to the user or
-                      saved to the log file
-    """
-    def __init__(self: object, message: str, output: bool, scope: str, timestamp: str):
-        self.message = message
-        self.output = output
-        self.scope = scope
-        self.timestamp = timestamp
-        self.rendered = (
-            f"[{timestamp}] {scope}: {message}"
-            if scope != "NOSCOPE" else
-            f"{message}"
+        path = (
+            environ["APPDATA"] + "\\torcf" if os == "win" else f"{home}/.config/torcf"
         )
 
+        # Create any missing directories
+        if not isdir(path):
+            print(f"Making path: {path}")
+            makedirs(path, exist_ok=True)
+        return path
+
+    # Exit if the operating system is unsupported
+    else:
+        print(f"FATAL: Unsupported operating system: {os}, exiting.")
+        exit()
 
 global Log
-Log = Logger()
+Log = smooth_logger.Logger("TORCF", get_config_path())

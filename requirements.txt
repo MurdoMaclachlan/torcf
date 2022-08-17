@@ -1,3 +1,4 @@
-smooth_progress>=0.1.0
+smooth_logger
+smooth_progress
 plyer
 praw>=7.5.0

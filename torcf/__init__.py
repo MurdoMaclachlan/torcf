@@ -16,7 +16,7 @@ from .globals import Globals, GlobalVars
 from .globals import ToRPost
 
 # Logger
-from .logger import Log, Logger
+from .logger import Log
 
 # Main program
 from .main import clone_finder

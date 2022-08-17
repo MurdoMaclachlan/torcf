@@ -1,13 +1,12 @@
 ## Unreleased
 
-As of this version, PRAW 7.5+ and smooth_progress 0.1+ are required. PyGObject 3.42+, previously an implicit requirement not explicitly stated, has been replaced with an explicitly-stated requirement of plyer.
+As of this version, `PRAW 7.5+` and `smooth_progress` are required. `PyGObject 3.42+`, previously an implicit requirement not explicitly stated, has been replaced with an explicitly-stated requirement of `smooth_logger`.
 
-- Restructured program, delegating many functions from main to other modules. (@MurdoMaclachlan)
-- Added logger class for handling logging and desktop notifications. (@MurdoMaclachlan)
-- Notifications now show the name of the program as a title. (@MurdoMaclachlan)
-- Added and enforced refresh tokens for Reddit authentication. (@MurdoMaclachlan)
+**New**
+
 - Added the ability to search for posts from a certain sub within the queue, keeping track of their flair and link in a .txt file and sending a desktop notification when a new post from that sub is found in the queue. (@MurdoMaclachlan)
 - Added the ability to check modqueue and automatically remove ToR posts for which the partner post has been removed. (@MurdoMaclachlan)
+- Added and enforced refresh tokens for Reddit authentication. (@MurdoMaclachlan)
 - Added various runtime arguments (@MurdoMaclachlan):
     - --check, -c: determines whether to search for posts from a certain sub; prompts what subs to search for.
     - --modlog, -l: determines whether to check modlog; requires moderator privileges. Allows tracking of when wanted posts are removed.
@@ -16,14 +15,26 @@ As of this version, PRAW 7.5+ and smooth_progress 0.1+ are required. PyGObject 3
     - --verbose, -v: provides extra logging and desktop notifications.
     - --wait, -w: how long in seconds the program should wait in between checks; defaults to 30; format: `--wait X`
 - Added ability to auto-remove clones; disabled by default, requires moderator privileges. (@MurdoMaclachlan)
+
+**Improvements**
+
+- Switched logging to external dependency, `smooth_logger`. (@MurdoMaclachlan) As part of this:
+  - Notifications now show the name of the program as a title. (@MurdoMaclachlan)
+  - Fixed attempting to update or create a log file even if the log has no entries of appropriate scope. (@MurdoMaclachlan)
+  - Fixed duplicated output to log file, contributing to large file size. (@MurdoMaclachlan)
+  - Fixed large memory usage after long runtime due to not clearing the log after each cycle. (@MurdoMaclachlan)
+- Restructured program, delegating many functions from main to other modules. (@MurdoMaclachlan)
 - Increased post limit for Reddit instance from 500 to 751 to account for increasing queue sizes. (@MurdoMaclachlan)
 - Changed priority from unflaired to flaired clones, which should now be the only type of clone to appear. (@MurdoMaclachlan)
 - Allowed gracefully handling kill signals such as CTRL+C instead of instantly dying. (@MurdoMaclachlan)
-- Prevented attempting to update or create a log file if the log is empty. (@MurdoMaclachlan)
-- Prevented attempting to update post_list.txt if there are no changes from the last cycle. (@MurdoMaclachlan)
-- Fixed duplicated output to log file, contributing to large file size. (@MurdoMaclachlan)
-- Fixed large memory usage after long runtime due to not clearing the log after each cycle. (@MurdoMaclachlan)
+
+**Documentation**
+
 - Fixed a typo in the README. (@MurdoMaclachlan)
+
+**Bug fixes**
+
+- Fixed attempting to update post_list.txt if there are no changes from the last cycle. (@MurdoMaclachlan)
 
 ## 0.5.1
 
