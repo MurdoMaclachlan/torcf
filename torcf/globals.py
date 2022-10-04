@@ -66,7 +66,7 @@ class GlobalVars:
         # Attributes declared here should have constant initial values
         self.first_post_url = ""
         self.posts = []
-        self.VERSION = "1.0.0-dev39-20221004"
+        self.VERSION = "1.0.0-dev40-20221004"
 
     def __determine_wait(self, argv: List, Log: Logger) -> int:
         """Determine the number of seconds TCF should wait between cycles. Default to
@@ -172,14 +172,12 @@ class GlobalVars:
 
         :return: True if there has been a change; else False.
         """
-        change = False
         if len(self.wanted_posts) > 0:
             for i in range(len(self.wanted_posts)):
                 if self.wanted_posts[i].flair != self.wanted_posts_last[i].flair:
-                    change = True
                     self.wanted_posts_last = self.wanted_posts
-                    break
-        return change
+                    return True
+        return False
 
 
 class ToRPost:
