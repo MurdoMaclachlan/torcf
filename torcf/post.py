@@ -16,13 +16,12 @@
 
     Contact me at murdomaclachlan@duck.com
 """
-
+from praw import Reddit
 from praw.models import Submission
+from smooth_progress import ProgressBar
 from typing import Dict, Iterable
 from .globals import Globals, ToRPost
 from .logger import Log
-
-global Globals, Log
 
 
 def add_post(post: Submission) -> None:
@@ -117,9 +116,8 @@ def find_wanted(post: ToRPost) -> None:
     if match_sub and post not in Globals.wanted_posts:
         Log.notify(f"Found {post.subreddit} post.")
         Globals.wanted_posts.append(post)
-    # If this post has been found, ensure its flair is up to date
-    # by updating the already logged post's flair with the new
-    # ToRPost instance's flair
+    # If this post has been found, ensure its flair is up-to-date by updating the
+    # already logged post's flair with the new ToRPost instance's flair
     elif match_sub and post in Globals.wanted_posts:
         Globals.wanted_posts[
             Globals.wanted_posts.index(post)
@@ -127,7 +125,7 @@ def find_wanted(post: ToRPost) -> None:
 
 
 def update_post_list() -> None:
-    """Write out current data within Gloabls.WANTED_POSTS to the post_list file,
+    """Write out current data within Globals.WANTED_POSTS to the post_list file,
     overwriting the data that was previously in that file.
 
     :return: Nothing
@@ -141,7 +139,7 @@ def update_post_list() -> None:
             )
 
 
-def check_mod_log(modlog: Iterable, bar: object) -> None:
+def check_mod_log(modlog: Iterable, bar: ProgressBar) -> None:
     """Checks the mod log of r/TranscribersOfReddit for any post removals.
 
     :param modlog: a praw modlog object
@@ -166,7 +164,7 @@ def check_mod_log(modlog: Iterable, bar: object) -> None:
             ].update_flair("Removed")
 
 
-def check_mod_queue(modqueue: Iterable, reddit: object, bar: object) -> None:
+def check_mod_queue(modqueue: Iterable, reddit: Reddit, bar: ProgressBar) -> None:
     """Checks the mod queue of r/TranscribersOfReddit for any posts reported as removed,
     checks if they are removed, and removes them if so.
 
@@ -176,7 +174,7 @@ def check_mod_queue(modqueue: Iterable, reddit: object, bar: object) -> None:
 
     :return: Nothing
     """
-    Log.new("Checking moqueue...", "INFO")
+    Log.new("Checking modqueue...", "INFO")
     bar.open()
     for item in modqueue:
         try:

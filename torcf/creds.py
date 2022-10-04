@@ -23,8 +23,6 @@ from configparser import ConfigParser
 from typing import Dict
 from .logger import Log
 
-global Log
-
 
 def add_refresh_token(creds: Dict, refresh_token: str) -> None:
     """Appends a given Reddit refresh token to praw.ini.

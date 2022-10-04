@@ -51,3 +51,4 @@ def get_config_path() -> str:
 
 global Log
 Log = smooth_logger.Logger("TORCF", get_config_path())
+Log.add_scope("CLONE", 2)

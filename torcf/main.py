@@ -16,6 +16,7 @@
 
     Contact me at murdomaclachlan@duck.com
 """
+
 import signal
 from smooth_progress import ProgressBar
 from sys import argv
@@ -28,7 +29,7 @@ from .logger import Log
 from .post import add_post, check_mod_log, check_mod_queue, check_post, find_wanted,\
                   update_post_list
 
-global bar, Globals, Log
+global bar
 
 
 def clone_finder() -> None:
@@ -52,54 +53,54 @@ def clone_finder() -> None:
         # Fetch posts and set shit up
         Log.new("Fetching posts...", "INFO")
         post_list = reddit.subreddit("transcribersofreddit").new(limit=751)
+        bar = ProgressBar(limit=750)
 
-        with ProgressBar(limit=750) as bar:
-            if not Globals.check_skip(post_list):
-                Log.new("Posts fetched; generating list...", "INFO")
-                # Iterate over posts and initialise each one as a ToRPost for easier
-                # management
-                bar.open()
-                for post in post_list:
-                    add_post(post)
-                    bar.increment()
-                bar.close()
-                Log.new("Checking for clones...", "INFO")
-                bar.open()
-                for post in Globals.posts:
-                    check_post(post)
-                    if Globals.CHECK_FOR_SUB:
-                        find_wanted(post)
-                    bar.increment()
-                bar.close()
-
-                # Write out any updated post data
+        if not Globals.check_skip(post_list):
+            Log.new("Posts fetched; generating list...", "INFO")
+            # Iterate over posts and initialise each one as a ToRPost for easier
+            # management
+            bar.open()
+            for post in post_list:
+                add_post(post)
+                bar.increment()
+            bar.close()
+            Log.new("Checking for clones...", "INFO")
+            bar.open()
+            for post in Globals.posts:
+                check_post(post)
                 if Globals.CHECK_FOR_SUB:
-                    if Globals.MODLOG:
-                        check_mod_log(
-                            reddit.subreddit('transcribersofreddit').mod.log(
-                                limit=750
-                            ),
-                            bar
-                        )
-                    if Globals.MODQUEUE:
-                        check_mod_queue(
-                            reddit.subreddit('transcribersofreddit').mod.modqueue(
-                                limit=25
-                            ),
-                            reddit,
-                            bar
-                        )
-                    if Globals.wanted_posts_changed():
-                        update_post_list()
-                Log.new(
-                    f"Finished checking all posts, waiting {Globals.WAIT} seconds.",
-                    "INFO"
-                )
-            else:
-                Log.new("No new posts since last check, skipping cycle.", "INFO")
-                if Globals.VERBOSE:
-                    Log.notify("Skipping cycle.")
-                Log.new(f"Waiting {Globals.WAIT} seconds.", "INFO")
+                    find_wanted(post)
+                bar.increment()
+            bar.close()
+
+            # Write out any updated post data
+            if Globals.CHECK_FOR_SUB:
+                if Globals.MODLOG:
+                    check_mod_log(
+                        reddit.subreddit('transcribersofreddit').mod.log(
+                            limit=750
+                        ),
+                        bar
+                    )
+                if Globals.MODQUEUE:
+                    check_mod_queue(
+                        reddit.subreddit('transcribersofreddit').mod.modqueue(
+                            limit=25
+                        ),
+                        reddit,
+                        bar
+                    )
+                if Globals.wanted_posts_changed():
+                    update_post_list()
+            Log.new(
+                f"Finished checking all posts, waiting {Globals.WAIT} seconds.",
+                "INFO"
+            )
+        else:
+            Log.new("No new posts since last check, skipping cycle.", "INFO")
+            if Globals.VERBOSE:
+                Log.notify("Skipping cycle.")
+            Log.new(f"Waiting {Globals.WAIT} seconds.", "INFO")
         Log.output()
         Globals.clean()
         sleep(Globals.WAIT)
