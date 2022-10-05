@@ -19,10 +19,8 @@ As of this version, `PRAW 7.5+` and `smooth_progress` are required. `PyGObject 3
 **Improvements**
 
 - Switched logging to external dependency, `smooth_logger`. (@MurdoMaclachlan) As part of this:
-  - Notifications now show the name of the program as a title. (@MurdoMaclachlan)
-  - Fixed attempting to update or create a log file even if the log has no entries of appropriate scope. (@MurdoMaclachlan)
-  - Fixed duplicated output to log file, contributing to large file size. (@MurdoMaclachlan)
-  - Fixed large memory usage after long runtime due to not clearing the log after each cycle. (@MurdoMaclachlan)
+  - Notifications now show the name of the program as a title.
+  - Fixed multiple logging-related bugs (see 'Bug Fixes', below).
 - Restructured program, delegating many functions from main to other modules. (@MurdoMaclachlan)
 - Increased post limit for Reddit instance from 500 to 751 to account for increasing queue sizes. (@MurdoMaclachlan)
 - Changed priority from unflaired to flaired clones, which should now be the only type of clone to appear. (@MurdoMaclachlan)
@@ -35,6 +33,9 @@ As of this version, `PRAW 7.5+` and `smooth_progress` are required. `PyGObject 3
 **Bug fixes**
 
 - Fixed attempting to update post_list.txt if there are no changes from the last cycle. (@MurdoMaclachlan)
+- Fixed attempting to update or create a log file even if the log has no entries of appropriate scope. (@MurdoMaclachlan)
+- Fixed duplicated output to log file, contributing to large file size. (@MurdoMaclachlan)
+- Fixed large memory usage after long runtime due to not clearing the log after each cycle. (@MurdoMaclachlan)
 
 ## 0.5.1
 
