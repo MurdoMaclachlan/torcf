@@ -24,7 +24,7 @@ import smooth_logger
 
 def get_config_path() -> str:
     """Detects OS and defines the appropriate save path for config and logs. Exits on
-    detecting an unspported OS. Supported OSes are: Linux, MacOS, Windows.
+    detecting an unsupported OS. Supported OSes are: Linux, MacOS, Windows.
 
     :return: A string dictionary containing the newly defined save paths.
     """

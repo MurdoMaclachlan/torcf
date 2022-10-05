@@ -19,19 +19,6 @@ Config is done through a simple run-time argument system. When you run the `clon
 - `--verbose`, or `-v`; tells TCF to send a desktop notification whenever it skips a cycle.
 - `--wait` or `-w`; allows you to enter a custom number of seconds for TCF to wait between cycles. The number should be given immediately succeeding the argument, separated by a single space, like so: `--wait 60`. The default wait time, if TCF cannot parse the argument or it is not passed, is 30 seconds.
 
-There is also configuration available for the logger, by changing the optional arguments that are passed to its scopes. Currently, there is no functionality for easily changing these; the values must be edited in the code.
-
-If a value of `0` is passed to a scope, statements of that scope will be disabled. If `1` is passed, they will be sent to the console but not the log file, and if `2` is passed, they will be sent to the console and saved to the log file. The available scopes are:
-
-- `CLONE`: A notification that a clone has been found. Default: 2
-- `DEBUG`: Information for debugging the program. Default: 0
-- `ERROR`: Errors the program can recover from but may harm some of its functionality. Default: 2
-- `FATAL`: Errors that mean the program cannot continue; crashes. Default: 2
-- `INFO`: General information about what the program is currently doing. Default: 1
-- `WARNING`: Things that could cause errors later on. Default: 2
-
 Requirements for installing the program can be found in `requirements.txt`. The program requires a minimum Python version of **3.5** due to the use type hinting. The default praw.ini section header is `tcf` (ToR Clone Finder) but this can be changed.
-
-The program uses `gi.repository.Notify` to give desktop notifications, thus requiring GTK+ 3. This should be available for Windows, macOS and all Unix-like systems.
 
 The program's data, including the `praw.ini` file and any logs, is stored in a subfolder of the working directory (the directory it is run from). I suggest creating a folder specifically for the program; mine is stored in a `programs/clone_finder` subfolder of my Transcribers of Reddit-related folder.
