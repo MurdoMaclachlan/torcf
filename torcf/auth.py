@@ -26,7 +26,7 @@ from praw.exceptions import MissingRequiredAttributeException
 from random import randint
 from typing import Dict
 from .creds import add_refresh_token, create_credentials, get_credentials
-from .globals import Globals
+from .globals import VERSION
 from .logger import Log
 
 
@@ -86,7 +86,7 @@ def login() -> praw.Reddit:
     creds = get_credentials()
 
     constants = {
-        "user_agent": f"{sys.platform}:tcf:v{Globals.VERSION}:by /u/MurdoMaclachlan",
+        "user_agent": f"{sys.platform}:tcf:v{VERSION}:by /u/MurdoMaclachlan",
         "client_id": creds["client_id"],
         "client_secret": creds["client_secret"],
         "username": creds["username"],

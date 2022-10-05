@@ -11,7 +11,10 @@ As of this version, `PRAW 7.5+` and `smooth_progress` are required. `PyGObject 3
     - --check, -c: determines whether to search for posts from a certain sub; prompts what subs to search for.
     - --modlog, -l: determines whether to check modlog; requires moderator privileges. Allows tracking of when wanted posts are removed.
     - --modqueue -q: determines whether to check modqueue; requires moderator privileges. Allows posts removed on the partner sub to be automatically removed if reported.
-    - --remove, -r: determines whether clones should be automatically removed; requires moderator privileges.
+    - --remove, -r: determines whether clones should be automatically removed; requires moderator privileges. Has three modes:
+        - all: removes all clones.
+        - flaired: removes only clones with flairs.
+        - unflaired: removes only clones without flairs.
     - --verbose, -v: provides extra logging and desktop notifications.
     - --wait, -w: how long in seconds the program should wait in between checks; defaults to 30; format: `--wait X`
 - Added ability to auto-remove clones; disabled by default, requires moderator privileges. (@MurdoMaclachlan)
@@ -32,7 +35,6 @@ As of this version, `PRAW 7.5+` and `smooth_progress` are required. `PyGObject 3
 
 **Bug fixes**
 
-- Fixed attempting to update post_list.txt if there are no changes from the last cycle. (@MurdoMaclachlan)
 - Fixed attempting to update or create a log file even if the log has no entries of appropriate scope. (@MurdoMaclachlan)
 - Fixed duplicated output to log file, contributing to large file size. (@MurdoMaclachlan)
 - Fixed large memory usage after long runtime due to not clearing the log after each cycle. (@MurdoMaclachlan)

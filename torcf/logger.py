@@ -17,38 +17,10 @@
     Contact me at murdomaclachlan@duck.com
 """
 
-from os import environ, makedirs
-from os.path import expanduser, isdir
-from sys import platform
 import smooth_logger
+from .globals import Globals
 
-def get_config_path() -> str:
-    """Detects OS and defines the appropriate save path for config and logs. Exits on
-    detecting an unsupported OS. Supported OSes are: Linux, MacOS, Windows.
-
-    :return: A string dictionary containing the newly defined save paths.
-    """
-    home = expanduser("~")
-    os = "".join(list(platform)[:3])
-
-    # Route for a supported operating system
-    if os in ["dar", "lin", "win"]:
-
-        path = (
-            environ["APPDATA"] + "\\torcf" if os == "win" else f"{home}/.config/torcf"
-        )
-
-        # Create any missing directories
-        if not isdir(path):
-            print(f"Making path: {path}")
-            makedirs(path, exist_ok=True)
-        return path
-
-    # Exit if the operating system is unsupported
-    else:
-        print(f"FATAL: Unsupported operating system: {os}, exiting.")
-        exit()
 
 global Log
-Log = smooth_logger.Logger("TORCF", get_config_path())
+Log = smooth_logger.Logger("TORCF", Globals.config_path)
 Log.add_scope("CLONE", 2)

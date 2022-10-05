@@ -24,29 +24,25 @@ from sys import exit as sysexit
 from time import sleep
 from typing import Any
 from .auth import init
-from .globals import Globals
+from .globals import Globals, VERSION
 from .logger import Log
-from .post import add_post, check_mod_log, check_mod_queue, check_post, find_wanted,\
-                  update_post_list
+from .post import PostHandler, check_mod_queue
 
 global bar
 
 
 def clone_finder() -> None:
     """Primary function for TCF; handles all functionality and processes.
-
-    No arguments.
-
-    No return value.
     """
     global bar
 
-    Log.new(f"Running Clone Finder version {Globals.VERSION}", "NOSCOPE")
+    Log.new(f"Running Clone Finder version {VERSION}", "NOSCOPE")
     Globals.process_args(argv, Log)
     reddit = init()
     signal.signal(signal.SIGINT, signal_handler)
-    if Globals.CHECK_FOR_SUB:
+    if Globals.check_for_sub:
         Globals.get_subs()
+    Globals.Handler = PostHandler()
 
     while True:
 
@@ -55,55 +51,44 @@ def clone_finder() -> None:
         post_list = reddit.subreddit("transcribersofreddit").new(limit=751)
         bar = ProgressBar(limit=750)
 
-        if not Globals.check_skip(post_list):
+        if not Globals.Handler.check_if_skip(post_list):
             Log.new("Posts fetched; generating list...", "INFO")
             # Iterate over posts and initialise each one as a ToRPost for easier
             # management
             bar.open()
             for post in post_list:
-                add_post(post)
+                Globals.Handler.add_post(post)
                 bar.increment()
             bar.close()
             Log.new("Checking for clones...", "INFO")
-            bar.open()
-            for post in Globals.posts:
-                check_post(post)
-                if Globals.CHECK_FOR_SUB:
-                    find_wanted(post)
-                bar.increment()
-            bar.close()
+            Globals.Handler.check_posts(bar)
 
             # Write out any updated post data
-            if Globals.CHECK_FOR_SUB:
-                if Globals.MODLOG:
-                    check_mod_log(
-                        reddit.subreddit('transcribersofreddit').mod.log(
-                            limit=750
-                        ),
+            if Globals.check_for_sub:
+                if Globals.modlog:
+                    Globals.Handler.check_mod_log(
+                        reddit.subreddit('transcribersofreddit').mod.log(limit=750),
                         bar
                     )
-                if Globals.MODQUEUE:
+                if Globals.modqueue:
                     check_mod_queue(
-                        reddit.subreddit('transcribersofreddit').mod.modqueue(
-                            limit=25
-                        ),
+                        reddit.subreddit('transcribersofreddit').mod.modqueue(limit=25),
                         reddit,
                         bar
                     )
-                if Globals.wanted_posts_changed():
-                    update_post_list()
+                Globals.Handler.update_post_list()
             Log.new(
-                f"Finished checking all posts, waiting {Globals.WAIT} seconds.",
+                f"Finished checking all posts, waiting {Globals.wait} seconds.",
                 "INFO"
             )
         else:
             Log.new("No new posts since last check, skipping cycle.", "INFO")
-            if Globals.VERBOSE:
+            if Globals.verbose:
                 Log.notify("Skipping cycle.")
-            Log.new(f"Waiting {Globals.WAIT} seconds.", "INFO")
+            Log.new(f"Waiting {Globals.wait} seconds.", "INFO")
         Log.output()
-        Globals.clean()
-        sleep(Globals.WAIT)
+        Globals.Handler.clean()
+        sleep(Globals.wait)
 
 
 def signal_handler(sig: int, frame: Any) -> None:

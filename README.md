@@ -15,7 +15,12 @@ Being a program I wrote originally for personal use, this program does not have 
 Config is done through a simple run-time argument system. When you run the `clone_finder` script in the terminal, you can pass the following options:
 
 - `--check` or `-c`; tells TCF to check for any posts from a list of partner subs (which it will prompt you to enter), keeping a log of their link and current flair in `post_list.txt`, in the data folder.
-- `--remove` or `-r`; tells TCF to remove any soft clones it finds. Note that this will crash your program if you do not have moderator permissions. Even if you do have moderator permissions, it is **not recommended to set this as True** until further testing is done to make sure non-clones are not accidentally removed.
+- `--remove` or `-r`; tells TCF to remove any soft clones it finds. Note that this will crash your program if you do not have moderator permissions. Even if you do have moderator permissions, it is **not recommended to pass this** until further testing is done to make sure non-clones are not accidentally removed. Has three modes:
+    - all: removes all clones.
+    - flaired: removes only clones with flairs.
+    - unflaired: removes only clones without flairs.
+  
+  The mode should be given immediately succeeding the argument, separated by a single space, like so: `--remove all`. If the argument is passed with no mode, the program defaults to all.
 - `--verbose`, or `-v`; tells TCF to send a desktop notification whenever it skips a cycle.
 - `--wait` or `-w`; allows you to enter a custom number of seconds for TCF to wait between cycles. The number should be given immediately succeeding the argument, separated by a single space, like so: `--wait 60`. The default wait time, if TCF cannot parse the argument or it is not passed, is 30 seconds.
 
