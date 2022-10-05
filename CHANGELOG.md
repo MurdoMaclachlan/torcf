@@ -31,6 +31,7 @@ As of this version, `PRAW 7.5+` and `smooth_progress` are required. `PyGObject 3
 
 **Documentation**
 
+- Renamed entry script and main function to `torcf`. (@MurdoMaclachlan)
 - Fixed a typo in the README. (@MurdoMaclachlan)
 
 **Bug fixes**

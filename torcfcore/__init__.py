@@ -18,7 +18,7 @@ from .globals import Globals, GlobalVars
 from .logger import Log
 
 # Main program
-from .main import clone_finder
+from .main import torcf
 
 # Post manipulation
 from .post import ClonedPost

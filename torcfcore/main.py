@@ -31,7 +31,7 @@ from .post import PostHandler, check_mod_queue
 global bar
 
 
-def clone_finder() -> None:
+def torcf() -> None:
     """Primary function for TCF; handles all functionality and processes.
     """
     global bar

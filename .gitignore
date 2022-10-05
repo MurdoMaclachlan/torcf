@@ -2,4 +2,4 @@ data/*
 venv/*
 .idea/*
 *.pyc
-torcf/__pycache__
+torcfcore/__pycache__

@@ -18,7 +18,7 @@
     Contact me at murdomaclachlan@duck.com
 """
 
-from torcf.main import clone_finder
+from torcfcore.main import torcf
 
 print(
     "Copyright (C) 2020-present, Murdo B. Maclachlan\n"
@@ -28,4 +28,4 @@ print(
     "------------------------------------------------------------------"
 )
 
-clone_finder()
+torcf()
