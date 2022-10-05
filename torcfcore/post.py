@@ -99,7 +99,7 @@ class ClonedPost:
         """
         for clone in self.__flaired:
             if Globals.REMOVE["flaired"]:
-                # clone.remove(Handler)
+                clone.remove(Handler)
                 Log.new(f"Removed flaired clone: {clone.permalink}", "CLONE")
             else:
                 Log.new(
@@ -107,7 +107,7 @@ class ClonedPost:
                 )
         for clone in self.__unflaired:
             if Globals.REMOVE["unflaired"]:
-                # clone.remove(Handler)
+                clone.remove(Handler)
                 Log.new(f"Removed unflaired clone: {clone.permalink}", "CLONE")
             else:
                 Log.new(
@@ -132,7 +132,7 @@ class PostHandler:
         self.__posts.append(tor_post)
         # Check if this post is from one of the subreddits we are looking for, and
         # handle accordingly
-        if tor_post.subreddit in Globals.subreddits:
+        if Globals.check_for_sub and tor_post.subreddit in Globals.subreddits:
             # If we're already tracking the post, we just need to update its flair
             if tor_post in self.__wanted_posts:
                 self.__wanted_posts[
